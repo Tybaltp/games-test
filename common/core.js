@@ -170,7 +170,7 @@ function status(txt,cls,btns){const s=$('status'),rt=richOf(txt);s.className='st
       // b.short: a shorter label, used only when the buttons don't fit in the bar
       if(b.short){const l=document.createElement('span'),k=document.createElement('span');l.className='bl';l.textContent=b.label;k.className='bs';k.textContent=b.short;e.append(l,k);}else e.textContent=b.label;
       if(b.hover){e.onpointerenter=ev=>{if(ev.pointerType!=='touch')b.hover(true);};e.onpointerleave=()=>b.hover(false);}bx.appendChild(e);}}
-  fitBtns();}
+  fitBtns();bandSync(true);}
 // Short labels when the full ones overflow the bar; if the buttons still overflow, they wrap onto a second row and the
 // bar grows (checked again whenever the bar changes size)
 function fitBtns(){const n=$('notice'),bx=n&&n.querySelector('.btns');if(!bx)return;n.classList.remove('short','rows2');
@@ -180,7 +180,7 @@ function fitBtns(){const n=$('notice'),bx=n&&n.querySelector('.btns');if(!bx)ret
   if(bx.querySelector('.bs')){n.classList.add('short');if(!over())return;}
   n.classList.add('rows2');}
 
-function quiet(){const n=$('notice');if(n){n.className='notice';n.textContent='';}}
+function quiet(){const n=$('notice');if(n){n.className='notice';n.textContent='';}bandSync(true);}
 function peerOpts(){return {debug:1};}
 function newPeer(id){return id?new Peer(id,peerOpts()):new Peer(peerOpts());}
 
@@ -558,7 +558,7 @@ function renderGame(){if(!view)return;if(role==='ai')LS.set(AK(),{view,mySeat});
   if(role==='guest'&&C.pending&&C.pending.shown&&!r.over)status(t('st_waitHost'));
   else if(role==='guest'&&C.nackAt&&Date.now()-C.nackAt<5000&&!r.over)status(t('st_nack'),'',mine&&prep?[RST]:null);
   if(V.st==='in'&&mySeat>=0)status(t('vInvite',{n:vNm()}),'turn',[{label:t('decline'),on:()=>voiceAnswer(false)},{label:t('accept'),primary:true,on:()=>voiceAnswer(true)}]);
-  const wide=window.matchMedia(WIDE).matches;$('playersTop').hidden=wide;$('playersSide').hidden=!wide;
+  const wide=window.matchMedia(WIDE).matches&&!BAND;$('playersTop').hidden=wide;$('playersSide').hidden=!wide;
   const editing=!!document.activeElement&&document.activeElement.classList.contains('nmEdit');   // a name being typed: the cards stay
   if(!editing){$('playersTop').textContent='';$('playersSide').textContent='';}const host=wide?$('playersSide'):$('playersTop');
   if(!editing)for(const p of [0,1]){const el=document.createElement('div');el.className='player c'+p+(!r.over&&!d.over&&(ns&&navAt===null?!(view.held&&view.held[p]):turn===p)?' active':'');el.id='pl'+p;
@@ -566,6 +566,7 @@ function renderGame(){if(!view)return;if(role==='ai')LS.set(AK(),{view,mySeat});
     if(role==='test'||role==='file')nameEdit(nmx,p);
     const ck=document.createElement('div');ck.className='clock';ck.id='clock'+p;if(!view.tc)ck.hidden=true;
     el.append(h,ck);if(GAME.playerCard)GAME.playerCard(el,p,d);host.appendChild(el);}
+  if(BAND==='haut'){if(bandOn()){if(bandMsg.parentNode!==host||bandMsg.nextElementSibling)host.appendChild(bandMsg);}else bandMsg.remove();bandSync();}
   tick();lockBoard();
   // side panel: settings only (level of the computer and its opinion, against the computer only: hints use GAME.hintLevel)
   // SGF export: always against the computer, in Libre play and for a loaded game; in a competitive game (face to face,
@@ -613,6 +614,12 @@ function renderGame(){if(!view)return;if(role==='ai')LS.set(AK(),{view,mySeat});
   const ce=ol.querySelector('.cur');if(ce&&(navAt!==null||A)){const a=ce.getBoundingClientRect(),b=ol.getBoundingClientRect();if(a.top<b.top)ol.scrollTop+=a.top-b.top;else if(a.bottom>b.bottom)ol.scrollTop+=a.bottom-b.bottom;}else ol.scrollTop=ol.scrollHeight;sheetAttn();}
 // Players' cards in the side panel: wide screens, and landscape phones (board and panel side by side)
 const WIDE='(min-width:821px), (orientation:landscape) and (max-height:500px)';
+const BAND=document.documentElement.dataset.band||'',bandOn=()=>!!BAND&&window.matchMedia(WIDE).matches;
+const bandMsg=document.createElement('div');bandMsg.className='bandmsg';bandMsg.setAttribute('aria-live','polite');
+function bandSync(fresh){const n=$('notice');if(!n||BAND!=='haut')return;const on=bandOn(),m=n.querySelector('.msg');
+  if(!on){if(bandMsg.firstChild&&!m){const x=bandMsg.firstChild;n.prepend(x);}bandMsg.textContent='';return;}
+  bandMsg.className='bandmsg '+[...n.classList].filter(c=>c!=='notice'&&c!=='has-btns'&&c!=='rows2'&&c!=='short').join(' ');
+  if(m||fresh){bandMsg.textContent='';if(m)bandMsg.appendChild(m);}n.classList.toggle('empty',!n.querySelector('.btns'));}
 // Game view layout: html.ingame = a fixed-height app (no page scroll); html.wide = two columns (the WIDE query). Otherwise
 // (phones, portrait) the side panel is a bottom sheet, opened with « ⋯ » (html.sheet), closed by the backdrop, Escape,
 // « ⋯ » again or a swipe down.
@@ -625,7 +632,7 @@ function sheet(on){const R=document.documentElement,was=R.classList.contains('sh
 // Wide: the action bar (#notice) goes into the side panel under the players' cards (the panel's fixed top part); otherwise
 // back under the board (after the move navigation). The same element moves, nothing is duplicated.
 function layoutMode(){const w=isWide();document.documentElement.classList.toggle('wide',w);if(w)sheet(false);
-  const n=$('notice'),at=w?$('playersSide'):$('nav');if(n&&at&&n.previousElementSibling!==at)at.after(n);}
+  const n=$('notice'),at=w&&!BAND?$('playersSide'):$('nav');document.documentElement.classList.toggle('band',w&&!!BAND);if(n&&at&&n.previousElementSibling!==at)at.after(n);}
 // Not wide: the board's area gets a fixed height, so that the action bar can grow up to --barMax under it without the
 // board ever changing size (the room the bar does not use stays empty). Games that lay out the board themselves
 // (GAME.ownLayout) are left alone.

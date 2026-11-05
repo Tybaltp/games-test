@@ -258,3 +258,23 @@ details .chatlist li{margin:0}
 .wline{margin:6px 0 0;font-size:.85rem;color:var(--muted)}
 #invPart:not([hidden])+.rcpart{margin-top:12px;padding-top:10px;border-top:1px solid var(--line)}
 .voicein{padding-top:8px;border-top:1px solid var(--line)}
+
+/* Layout trials (games-test, <html data-band>): on wide screens the players' cards form a band above the board. Each
+   card: name over clock on the outer side, the game's own information (Tintas: the colours taken) towards the middle */
+html.ingame.band .boardwrap > .players{gap:10px;align-items:stretch}
+html.ingame.band .player{display:grid;grid-template-columns:auto minmax(0,1fr);grid-template-areas:"who x" "clock x";column-gap:14px;row-gap:0;align-items:center;padding:6px 12px}
+html.ingame.band .player > *{grid-area:x;min-width:0}
+html.ingame.band .player > .who{grid-area:who}
+html.ingame.band .player > .clock{grid-area:clock;font-size:1.2rem}
+html.ingame.band .player.c1{grid-template-columns:minmax(0,1fr) auto;grid-template-areas:"x who" "x clock";text-align:right}
+html.ingame.band .player.c1 > :not(.who):not(.clock){justify-self:start}
+html.ingame.band .player.c0 > :not(.who):not(.clock){justify-self:end}
+html.ingame.band .player > .clock[hidden]+*{grid-row:1 / span 2}
+/* « haut »: the status sentence between the two cards; its buttons stay in the bar under the board */
+.bandmsg{order:1;flex:1 1 0;min-width:0;display:flex;align-items:center;justify-content:center;text-align:center;padding:4px 10px;border:1px solid var(--line);border-radius:12px;background:var(--panel);font-weight:500;font-size:.9rem;line-height:1.3}
+.bandmsg .msg{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:3;line-clamp:3;overflow:hidden;overflow-wrap:anywhere}
+.bandmsg.turn{border-color:var(--accent)}.bandmsg.win{background:var(--accent);color:var(--accent-ink);border-color:var(--accent);font-weight:600}
+html.ingame.band .boardwrap > .notice.empty{visibility:hidden}
+html.ingame.band .player.c1{order:2}
+/* the bar under the board, once its sentence has gone up: buttons only, no frame */
+html.ingame.band[data-band="haut"] .boardwrap > .notice{background:none;border-color:transparent;box-shadow:none}
