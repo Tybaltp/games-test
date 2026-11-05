@@ -244,7 +244,7 @@ details .chatlist li{margin:0}
 .chatform .txt{flex:1 1 auto;padding:6px 9px}
 .chatform button{flex:none}
 #chatName{margin-top:8px;width:100%}
-/* voice chat between the two players: a section of its own, under the chat */
+/* voice chat between the two players: at the bottom of the chat frame */
 .voicein{display:flex;flex-direction:column;gap:6px;margin-top:8px}
 .voicein .hint{margin:0;font-size:.85rem}
 .voicein .confirm{justify-content:flex-start}
@@ -253,3 +253,8 @@ details .chatlist li{margin:0}
 #voiceMute{flex:none;padding:5px 10px;line-height:1}#voiceMute.on{border-color:var(--danger);color:var(--danger)}
 #voiceHang{flex:none}
 .player .vmic{margin-left:.35em;font-size:.85em}
+
+/* spectators present: one line at the top of the chat frame; resume code under the invitation, in the same frame */
+.wline{margin:6px 0 0;font-size:.85rem;color:var(--muted)}
+#invPart:not([hidden])+.rcpart{margin-top:12px;padding-top:10px;border-top:1px solid var(--line)}
+.voicein{padding-top:8px;border-top:1px solid var(--line)}

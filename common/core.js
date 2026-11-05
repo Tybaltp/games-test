@@ -64,7 +64,7 @@ const I18C={fr:{
  resumeHint:"Si une partie n'a pas pu être rétablie, collez le code de reprise copié pendant la partie. Vous l'hébergez à nouveau et envoyez le nouveau code à votre adversaire.",
  cancel:"Annuler",confirmMv:"Confirmer",
  start:"Départ",startBtn:"Démarrer la partie",pass:"Passer",resign:"Abandonner",resignNo:"Continuer",resignYes:"Confirmer l'abandon",
- invite:"Inviter",copy:"Copier",copied:"Copié",linkOpp:"Lien pour votre adversaire",linkWatch:"Lien pour les observateurs",
+ invite:"Inviter",codes:"Codes",copy:"Copier",copied:"Copié",linkOpp:"Lien pour votre adversaire",linkWatch:"Lien pour les observateurs",
  fileNote:"Ce fichier est ouvert depuis votre disque : les liens ne marcheront pour personne d'autre. Envoyez ce fichier HTML et le code : la personne l'ouvre, saisit le code et choisit Jouer ou Observer.",
  hostNote:"La partie tourne dans votre navigateur. Si vous décrochez, votre adversaire prend le relais après quelques secondes ; les pendules s'arrêtent pendant l'absence d'un joueur.",
  rcTxt:"Dernier recours si la connexion ne revient pas : l'un ou l'autre colle ce code dans « Reprendre une partie » sur la page d'accueil.",rcCopy:"Copier le code de reprise",sounds:"Sons",moves:"Coups",
@@ -91,7 +91,7 @@ const I18C={fr:{
  resumeHint:"If a game could not be restored, paste the resume code copied during the game. You host it again and send the new code to your opponent.",
  cancel:"Cancel",confirmMv:"Confirm",
  start:"Start",startBtn:"Start the game",pass:"Pass",resign:"Resign",resignNo:"Keep playing",resignYes:"Confirm resignation",
- invite:"Invite",copy:"Copy",copied:"Copied",linkOpp:"Link for your opponent",linkWatch:"Link for spectators",
+ invite:"Invite",codes:"Codes",copy:"Copy",copied:"Copied",linkOpp:"Link for your opponent",linkWatch:"Link for spectators",
  fileNote:"This file is open from your disk, so links will not work for anyone else. Send them this HTML file and the code: they open it, enter the code and choose Play or Watch.",
  hostNote:"The game runs in your browser. If you drop out, your opponent takes over after a few seconds; the clocks stop while a player is away.",
  rcTxt:"Last resort if the connection cannot be restored: either player can paste this code into “Resume a game” on the home page.",rcCopy:"Copy the resume code",sounds:"Sounds",moves:"Moves",
@@ -336,7 +336,7 @@ function chatReveal(){const g=H.game;if(!g||!g.chat)return;const o=replay(g,g.mo
   if(!o){g.endLog=false;return;}
   if(!g.endLog){g.endLog=true;hostLog(o.w<0?'draw':'wins',o.w<0?{why:o.why}:{n:g.names[o.w]||'',why:o.why},true);}
   for(const x of g.chat)if(x.w)x.v=1;}
-function hostChat(n,w,m){const g=H.game;m=chatClean(m);n=nmClean(n);if(!m||!n)return;if(!g.chat)g.chat=[];g.chat.push({n,w:w?1:0,m});
+function hostChat(n,w,m){const g=H.game;m=chatClean(m);n=nmClean(n);if(!m||!n)return;if(!g.chat)g.chat=[];let c;if(!w)c=Math.max(0,g.names.indexOf(n));else{const o=g.chat.find(x=>x.w&&x.n===n&&x.c!=null);c=o?o.c:2+new Set(g.chat.filter(x=>x.w&&x.m).map(x=>x.n)).size%6;}g.chat.push({n,w:w?1:0,m,c});
   if(g.chat.length>CHATMAX)g.chat.splice(0,g.chat.length-CHATMAX);hostBroadcast();}
 function chatSend(){const i=$('chatIn'),m=chatClean(i.value);if(!m||!view)return;
   if(role==='host')hostChat(view.names[mySeat]||nickGet()||t('p1'),false,m);
@@ -406,7 +406,7 @@ function chatRender(){const b=$('chatBox'),net=role==='host'||role==='guest'||ro
   if(!L.length){const li=document.createElement('li');li.className='hint';li.textContent=t('chatEmpty');ul.appendChild(li);}
   for(const x of L){const li=document.createElement('li');
     if(x.k){const a={...(x.a||{})};if(a.why)a.why=t(a.why);li.className='log';li.textContent=t(x.k,a);ul.appendChild(li);continue;}
-    const a=document.createElement('b');a.className='nm';a.style.setProperty('--nh',chatHue(x.n));a.textContent=x.n;li.appendChild(a);
+    const a=document.createElement('b');a.className='nm';a.style.setProperty('--nh',x.c!=null?CHATHUES[x.c%CHATHUES.length]:chatHue(x.n));a.textContent=x.n;li.appendChild(a);
     if(x.w){const o=document.createElement('span');o.className='obs';o.textContent=' ('+t('chatW')+')';li.appendChild(o);li.className='w';}
     li.append(lang==='fr'?'\u00a0: ':': ',x.m);ul.appendChild(li);}
   ul.scrollTop=ul.scrollHeight;}
@@ -571,7 +571,7 @@ function renderGame(){if(!view)return;if(role==='ai')LS.set(AK(),{view,mySeat});
   // SGF export: always against the computer, in Libre play and for a loaded game; in a competitive game (face to face,
   // by link) only once it is over
   const sgfOk=role==='ai'||role==='test'||role==='file'||A||!!r.over;if($('sgfExpBox'))$('sgfExpBox').hidden=!sgfOk;
-  $('myCard').hidden=!(role==='ai'||solo()||sgfOk||(mySeat>=0&&!r.over&&view.names[1-mySeat]&&view.started));
+  $('myCard').hidden=!($('myCard').querySelector('#cbOn')||role==='ai'||solo()||sgfOk||(mySeat>=0&&!r.over&&view.names[1-mySeat]&&view.started));
   if($('aiBox'))$('aiBox').hidden=role!=='ai';
   $('resignBox').hidden=A||!!r.over||mySeat<0||!$('resignAsk').hidden;
   if($('drawBtn')){const dv=view.draw,pl=!A&&!r.over&&!!view.started&&mySeat>=0&&navAt===null&&(role==='ai'||role==='local'||((role==='host'||role==='guest')&&!!view.names[1-mySeat]));
@@ -586,17 +586,15 @@ function renderGame(){if(!view)return;if(role==='ai')LS.set(AK(),{view,mySeat});
     $('startTxt').textContent=(view.ready&&view.ready[1-mySeat]?t('ready',{n:nm(1-mySeat)}):'')+(view.tc?t('clocksStart'):'');}
   {const ib=$('inviteBox'),waiting=mySeat>=0&&(!view.names[1-mySeat]||!view.started),wC=role==='watch'&&!!C.code&&C.code.length===8;
     // always there in a network game, folded once it has started: a match gives its own pages' links, a spectator only the spectators' link
-    ib.hidden=role==='ai'||solo()||role==='file'||(view.match?MTW==='v':!(role==='host'||(mySeat>=0&&C.code)||wC));
-    if(!ib.hidden){if(view.match)fillMatch();else if(role==='watch')fillWatch(C.code);else if(role!=='host'&&C.code)fillCodes(C.code,true);}
+    const invOn=!(role==='ai'||solo()||role==='file'||(view.match?MTW==='v':!(role==='host'||(mySeat>=0&&C.code)||wC))),rcOn=!(role==='ai'||solo()||!(mySeat>=0&&view.started));ib.hidden=!invOn&&!rcOn;$('invPart').hidden=!invOn;$('rcCard').hidden=!rcOn;{const k=!invOn?'resumeCode':waiting?'invite':'codes',sm=$('inviteSum');if(sm.dataset.i18n!==k||sm.textContent!==t(k)){sm.dataset.i18n=k;sm.textContent=t(k);}}
+    if(invOn){if(view.match)fillMatch();else if(role==='watch')fillWatch(C.code);else if(role!=='host'&&C.code)fillCodes(C.code,true);}
     if(waiting!==ib.classList.contains('prominent')){ib.classList.toggle('prominent',waiting);ib.open=waiting;}
     // waiting: open at the top of the column; once folded, below the commands
-    if(waiting){const sc=$('sideScroll');if(sc){if(sc.firstElementChild!==ib)sc.prepend(ib);}else if(ib.previousElementSibling!==$('playersSide'))$('playersSide').after(ib);}else if(ib.nextElementSibling!==$('watchBox'))$('watchBox').before(ib);}$('rcCard').hidden=false;$('rcBoxD').hidden=role==='ai'||solo()||!(mySeat>=0&&view.started);
-  {const wb=$('watchBox'),net=role==='host'||role==='guest'||role==='watch';wb.hidden=!net;
-    if(net){const ws=Array.isArray(view.wnames)?view.wnames:[],n=view.watchers||0,ul=$('watchList');$('watchSum').textContent=t('watchersT',{n});
-      const items=n?ws.map(x=>x||t('anon')).sort((a,b)=>a.localeCompare(b)):[];const key=n+'|'+items.join('|')+'|'+lang;
-      if(ul.dataset.k!==key){ul.dataset.k=key;ul.textContent='';
-        if(!items.length){const li=document.createElement('li');li.className='hint';li.textContent=t(n?(n>1?'spects':'spect'):'noSpect',{n});ul.appendChild(li);}
-        for(const x of items){const li=document.createElement('li');li.textContent=x;ul.appendChild(li);}}}}
+    if(waiting){const sc=$('sideScroll');if(sc){if(sc.firstElementChild!==ib)sc.prepend(ib);}else if(ib.previousElementSibling!==$('playersSide'))$('playersSide').after(ib);}else if(ib.nextElementSibling!==$('movesBox'))$('movesBox').before(ib);}
+  {const wl=$('watchLine'),net=role==='host'||role==='guest'||role==='watch';
+    if(net){const ws=Array.isArray(view.wnames)?view.wnames:[],n=view.watchers||0;
+      const items=n?ws.map(x=>x||t('anon')).sort((a,b)=>a.localeCompare(b)):[];
+      const txt=!n?t('noSpect'):t('watchersT',{n})+(lang==='fr'?'\u00a0: ':': ')+items.join(', ');if(wl.textContent!==txt)wl.textContent=txt;}}
   chatRender();voiceRender();
   $('endCard').hidden=!r.over&&role!=='file'&&!(A&&(role==='local'||role==='ai'));   // the analysis of a game over keeps the way to a new one   // a game read from a file: always the way back home
   {const pl=mySeat>=0&&(role==='host'||role==='guest'||role==='ai'||solo()),rm=role==='ai'||solo()?null:view.rematch,opp=view.names[1-mySeat]||t(mySeat?'p1':'p2');
