@@ -566,7 +566,7 @@ function renderGame(){if(!view)return;if(role==='ai')LS.set(AK(),{view,mySeat});
     if(role==='test'||role==='file')nameEdit(nmx,p);
     const ck=document.createElement('div');ck.className='clock';ck.id='clock'+p;if(!view.tc)ck.hidden=true;
     el.append(h,ck);if(GAME.playerCard)GAME.playerCard(el,p,d);host.appendChild(el);}
-  if(BAND)requestAnimationFrame(()=>{fitCards();bandFit();});
+  if(BAND)requestAnimationFrame(fitCards);
   if(BAND==='haut'){if(bandOn()){if(bandMsg.parentNode!==host||bandMsg.nextElementSibling)host.appendChild(bandMsg);}else bandMsg.remove();bandSync();}
   tick();lockBoard();
   // side panel: settings only (level of the computer and its opinion, against the computer only: hints use GAME.hintLevel)
@@ -648,12 +648,7 @@ function chatFit(){const b=$('chatBox'),l=$('chatList');if(!b||!l)return;
 // fit2, drawn by the game's CSS), until the name fits or the steps run out
 function fitCards(){for(const el of document.querySelectorAll('#playersTop > .player')){const w=el.querySelector('.who');if(!w)continue;
   el.classList.remove('fit1','fit2');for(const k of ['fit1','fit2']){if(w.scrollWidth<=w.clientWidth+1)break;el.classList.add(k);}}}
-// band layout: a board narrower than its column's height leaves its area no taller than the board, and the column
-// (players, board, bar) is centred as a block: no hole between the board and the bar
-function bandFit(){const ba=document.querySelector('.boardwrap .boardarea'),b=ba&&ba.querySelector('.board');if(!ba||!b)return;
-  if(!bandOn()||GAME.ownLayout){if(ba.style.maxHeight)ba.style.maxHeight='';return;}
-  ba.style.maxHeight='';const h=b.getBoundingClientRect().height;if(h&&ba.clientHeight-h>4)ba.style.maxHeight=Math.ceil(h)+'px';}
-window.addEventListener('resize',()=>{if(BAND){fitCards();bandFit();}});
+window.addEventListener('resize',()=>{if(BAND)fitCards();});
 function layoutMode(){const w=isWide();chatDock(w);document.documentElement.classList.toggle('wide',w);if(w)sheet(false);
   const n=$('notice'),at=w&&!BAND?$('playersSide'):$('nav');document.documentElement.classList.toggle('band',w&&!!BAND);if(n&&at&&n.previousElementSibling!==at)at.after(n);}
 // Not wide: the board's area gets a fixed height, so that the action bar can grow up to --barMax under it without the

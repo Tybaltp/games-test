@@ -300,5 +300,5 @@ html.ingame.band #playersTop > .player .tally{min-width:150px}
 #rcCard #rcBox{grid-column:1 / -1;margin-top:4px}
 /* the host's note only while waiting for the opponent */
 #inviteBox:not(.prominent) #hostNote{display:none}
-html.ingame.band .boardwrap{justify-content:center}
+/* band: names at the top, the command bar at the bottom, the board centred in the room between */
 html.ingame.band .boardarea{align-items:center}
