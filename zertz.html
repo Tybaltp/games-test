@@ -37,6 +37,10 @@ html.ingame:not(.wide) .board{border-radius:14px}
 .tally{display:flex;gap:10px;font-family:var(--f-mono);font-size:.78rem;font-variant-numeric:tabular-nums;color:var(--ink);white-space:nowrap;overflow:hidden}
 .tally div{display:flex;align-items:center;gap:3px}
 .tally .goal{color:var(--muted)}
+/* band layout (games-test): in the cards above the board, each count under its marble */
+html.ingame.band #playersTop .tally{gap:14px}
+html.ingame.band #playersTop .tally div{display:grid;grid-template-columns:auto auto;justify-items:center;align-items:baseline;row-gap:3px;column-gap:0}
+html.ingame.band #playersTop .tally .mb{grid-column:1 / -1;justify-self:center}
 .mb{width:14px;height:14px;border-radius:50%;flex:none;display:inline-block}
 .mb.c0{background:var(--m0);border:1.5px solid var(--m0e)}
 .mb.c1{background:var(--m1);border:1.5px solid var(--m1e)}
