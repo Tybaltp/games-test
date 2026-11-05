@@ -72,9 +72,13 @@ html.ingame.wide .side .pblock .notice{height:var(--barW)}
 /* band layout (games-test): both reserves in a column left of the board, the opponent's above, mine below */
 html.ingame.band .dbrow{flex:1 1 0;min-height:0;display:flex;gap:10px;align-items:stretch}
 html.ingame.band .dbrow > .boardarea{flex:1 1 0;min-width:0;min-height:0}
-html.ingame.band .dbside{flex:none;display:flex;flex-direction:column;justify-content:space-between;gap:8px;min-height:0}
-html.ingame.band .dbside > .pwrap{flex:none}
-html.ingame.band .dbside .pblock{padding:6px}
+html.ingame.band .dbside{flex:none;display:flex;flex-direction:column;gap:8px;min-height:0}
+/* each reserve takes half the height, its pieces centred in it */
+html.ingame.band .dbside > .pwrap{flex:1 1 0;min-height:0;display:flex;flex-direction:column}
+html.ingame.band .dbside .pblock{flex:1 1 auto;min-height:0;padding:6px;justify-content:center}
+html.ingame.band .dbside .pblock .prow{justify-content:center}
+/* the side column at the shared width (this page widens it elsewhere for its reserves, which are now by the board) */
+html.ingame.band.wide .wrap{grid-template-columns:minmax(0,1fr) 300px}
 html.ingame.band .dbside .pblock .pinfo{display:none}
 /* the reserves on a regular grid: each piece centred, across and down, in a square of the largest piece's size */
 html.ingame.band .dbside .pblock .tray{flex:none;display:grid;grid-template-columns:repeat(var(--cols,3),calc(var(--cell) * 6));grid-auto-rows:calc(var(--cell) * 6);place-items:center;justify-content:center;gap:2px;width:calc(var(--cell) * 6 * var(--cols,3) + (var(--cols,3) - 1) * 2px)}
@@ -457,12 +461,13 @@ function placeBand(){const ob=$('oppBlock'),mb=$('myBlock'),ow=$('oppWrap'),mw=$
   if(n.parentNode!==nv.parentNode||n.previousElementSibling!==nv)nv.after(n);
   for(const W_ of [ow,mw])W_.style.minHeight='';
   // one cell size for both reserves, chosen on the full reserves (21 pieces each) so that it changes only when the
-  // screen does: 1 to 4 pieces wide, the cell (8 to 16 px) that leaves the board the most room (within 4 %: the larger pieces)
+  // screen does: each in half the height, 1 to 4 pieces wide, the cell (8 to 16 px) that leaves the board the most room (within 2 %: the
+  // larger pieces)
   const H=row.clientHeight,Wd=row.clientWidth;if(H<=0||Wd<=0)return;const key=[H,Wd].join('/');
-  if(placeBand.key!==key){placeBand.key=key;let best=null;const T=$('myTray'),fr=mb.offsetHeight-T.offsetHeight+ob.offsetHeight-$('oppTray').offsetHeight+12;
+  if(placeBand.key!==key){placeBand.key=key;let best=null;const T=$('myTray'),Hh=(H-8)/2-16;   // each reserve: half the height
     for(const cols of [1,2,3,4])for(let cell=16;cell>=8;cell-=.5){for(const B of [mb,ob]){B.style.setProperty('--cols',cols);B.style.setProperty('--cell',cell+'px');}
-      if(2*fullTray(T,cell).h+fr>H)continue;const side=Math.min(H,Wd-cols*6*cell-36);
-      if(!best||side>best.side*1.04||(side>=best.side/1.04&&cell>best.cell))best={cols,cell,side};break;}
+      if(fullTray(T,cell).h>Hh)continue;const side=Math.min(H,Wd-cols*6*cell-(cols-1)*2-28);
+      if(!best||side>best.side*1.02||(side>=best.side/1.02&&cell>best.cell))best={cols,cell,side};break;}
     placeBand.best=best||{cols:4,cell:8};}
   const b=placeBand.best;for(const B of [mb,ob]){B.style.setProperty('--cols',b.cols);B.style.setProperty('--cell',b.cell+'px');}}
 function holdHeights(w){const pairs=[['oppWrap','oppBlock','oppTray'],['myWrap','myBlock','myTray']].map(([a,b,c])=>[$(a),$(b),$(c)]);
