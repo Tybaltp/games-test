@@ -66,7 +66,7 @@ const I18C={fr:{
  start:"Départ",startBtn:"Démarrer la partie",pass:"Passer",resign:"Abandonner",resignNo:"Continuer",resignYes:"Confirmer l'abandon",
  invite:"Inviter",codes:"Codes",copy:"Copier",copied:"Copié",linkOpp:"Lien pour votre adversaire",linkWatch:"Lien pour les observateurs",
  fileNote:"Ce fichier est ouvert depuis votre disque : les liens ne marcheront pour personne d'autre. Envoyez ce fichier HTML et le code : la personne l'ouvre, saisit le code et choisit Jouer ou Observer.",
- hostNote:"La partie tourne dans votre navigateur ; si vous décrochez, votre adversaire prend le relais.",cGame:"Partie",cWatch:"Observateurs",cResume:"Reprise",copyCode:"Copier le code",copyLink:"Copier le lien",
+ hostNote:"La partie tourne dans votre navigateur ; si vous décrochez, votre adversaire prend le relais.",cGame:"Partie",cWatch:"Observateurs",cResume:"Reprise",copyCode:"Copier le code",copyLink:"Copier le lien",cCode:"Code",cLink:"Lien",
  rcTxt:"Dernier recours si la connexion ne revient pas : l'un ou l'autre colle ce code dans « Reprendre une partie » sur la page d'accueil.",rcCopy:"Copier le code de reprise",sounds:"Sons",moves:"Coups",
  noSpect:"Aucun observateur",spect:"{n} observateur",spects:"{n} observateurs",you:"Vous",p1:"Joueur 1",p2:"Joueur 2",
  iam:"Je suis {n}",badResume:"Ce code de reprise n'est pas valide.",codeLen:"Saisissez le code reçu.",codeWatch:"Code pour les observateurs",
@@ -93,7 +93,7 @@ const I18C={fr:{
  start:"Start",startBtn:"Start the game",pass:"Pass",resign:"Resign",resignNo:"Keep playing",resignYes:"Confirm resignation",
  invite:"Invite",codes:"Codes",copy:"Copy",copied:"Copied",linkOpp:"Link for your opponent",linkWatch:"Link for spectators",
  fileNote:"This file is open from your disk, so links will not work for anyone else. Send them this HTML file and the code: they open it, enter the code and choose Play or Watch.",
- hostNote:"The game runs in your browser; if you drop out, your opponent takes over.",cGame:"Game",cWatch:"Spectators",cResume:"Resume",copyCode:"Copy the code",copyLink:"Copy the link",
+ hostNote:"The game runs in your browser; if you drop out, your opponent takes over.",cGame:"Game",cWatch:"Spectators",cResume:"Resume",copyCode:"Copy the code",copyLink:"Copy the link",cCode:"Code",cLink:"Link",
  rcTxt:"Last resort if the connection cannot be restored: either player can paste this code into “Resume a game” on the home page.",rcCopy:"Copy the resume code",sounds:"Sounds",moves:"Moves",
  noSpect:"No spectators",spect:"{n} spectator",spects:"{n} spectators",you:"You",p1:"Player 1",p2:"Player 2",
  iam:"I am {n}",badResume:"This resume code is not valid.",codeLen:"Enter the code you received.",codeWatch:"Code for spectators",
@@ -1118,7 +1118,7 @@ function coreStart(){if(window.ResizeObserver&&$('notice'))new ResizeObserver(()
   $('jWatch').onclick=()=>joinClick(true);
   $('resumeBtn').onclick=()=>{const s=LS.get(K('p2p-host'),null);if(s&&unfinished(s.game)){hostStart(s);return;}const sg=LS.get(K('p2p-guest'),null);if(sg)clientStart(sg.code,sg.name||nickGet()||t('p2'),false);};
   $('rcCopy').onclick=()=>{if(!view)return;const inp=$('rcTxt');inp.value=exportCode();$('rcBox').hidden=true;
-    try{navigator.clipboard.writeText(inp.value).then(()=>{$('rcCopy').textContent=t('copied');setTimeout(()=>$('rcCopy').textContent=t('copyCode'),1500);},()=>{$('rcBox').hidden=false;inp.select();});}catch(e){$('rcBox').hidden=false;inp.select();}};
+    try{navigator.clipboard.writeText(inp.value).then(()=>{$('rcCopy').textContent=t('copied');setTimeout(()=>$('rcCopy').textContent=t('cCode'),1500);},()=>{$('rcBox').hidden=false;inp.select();});}catch(e){$('rcBox').hidden=false;inp.select();}};
   $('rForm').addEventListener('submit',e=>{e.preventDefault();let p;try{p=importCode($('rIn').value);}catch(x){$('joinErr').textContent=t('badResume');$('rSeats').innerHTML='';return;}
     const box=$('rSeats');box.innerHTML=[0,1].map(k=>`<button type="button" class="primary" data-rseat="${k}">${t('iam',{n:String(p.names[k]||t(k?'p2':'p1')).replace(/[&<>"']/g,'')})}</button>`).join('');
     box.querySelectorAll('[data-rseat]').forEach(b=>b.onclick=()=>resumeAs(+b.dataset.rseat,p));});

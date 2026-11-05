@@ -6,7 +6,7 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/peerjs/1.5.4/peerjs.min.js"></script>
 <script>if(typeof Peer==='undefined')document.write('<script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"><\/script>');</script>
-<link rel="stylesheet" href="common/games.css?v=27">
+<link rel="stylesheet" href="common/games.css?v=28">
 <style>
 /* Tintas palette (light, dark), board and colour counters; the shared layout is in common/games.css */
 :root{
@@ -141,12 +141,12 @@ ol.log .tag{color:var(--muted);font-size:.72rem;margin-right:3px}
       <div id="invPart">
       <!-- one row per code: the code in clear, then « copy the code » and « copy the link » (the links stay in hidden fields) -->
       <div id="linksBox" class="vh" hidden><div id="oppLink"><input id="codeP" readonly tabindex="-1" aria-hidden="true"></div><div id="watchLinkBox"><input id="codeW" readonly tabindex="-1" aria-hidden="true"></div></div>
-      <div class="coderow" id="codePBox"><span class="hint" data-i18n="cGame">Game</span><input class="codetxt" id="codeC" readonly aria-label="Game code"><span class="cbtns"><button type="button" data-copy="codeC" data-i18n="copyCode">Copy the code</button><button type="button" class="lnk" data-copy="codeP" data-i18n="copyLink">Copy the link</button></span></div>
-      <div class="coderow" id="codeWBox"><span class="hint" data-i18n="cWatch">Spectators</span><input class="codetxt" id="codeWC" readonly aria-label="Code for spectators"><span class="cbtns"><button type="button" data-copy="codeWC" data-i18n="copyCode">Copy the code</button><button type="button" class="lnk" data-copy="codeW" data-i18n="copyLink">Copy the link</button></span></div>
+      <div class="coderow" id="codePBox"><span class="hint" data-i18n="cGame">Game</span><input class="codetxt" id="codeC" readonly aria-label="Game code"><span class="cbtns"><button type="button" data-copy="codeC" data-i18n="cCode" data-i18n-t="copyCode">Code</button><button type="button" class="lnk" data-copy="codeP" data-i18n="cLink" data-i18n-t="copyLink">Link</button></span></div>
+      <div class="coderow" id="codeWBox"><span class="hint" data-i18n="cWatch">Spectators</span><input class="codetxt" id="codeWC" readonly aria-label="Code for spectators"><span class="cbtns"><button type="button" data-copy="codeWC" data-i18n="cCode" data-i18n-t="copyCode">Code</button><button type="button" class="lnk" data-copy="codeW" data-i18n="cLink" data-i18n-t="copyLink">Link</button></span></div>
       <p class="hint" id="fileNote" hidden data-i18n="fileNote">This file is open from your disk, so links will not work for anyone else. Send them this HTML file and the code: they open it, enter the code and choose Play or Watch.</p>
       <p class="hint" id="hostNote" data-i18n="hostNote">The game runs in your browser; if you drop out, your opponent takes over.</p>
       </div>
-      <div id="rcCard" class="rcpart coderow" hidden><span class="hint" data-i18n="cResume">Resume</span><span class="cbtns"><button type="button" id="rcCopy" data-i18n="copyCode" data-i18n-t="rcTxt">Copy the code</button></span><div class="link" id="rcBox" hidden><input id="rcTxt" readonly aria-label="Resume code"></div></div>
+      <div id="rcCard" class="rcpart coderow" hidden><span class="hint" data-i18n="cResume">Resume</span><span class="codetxt"></span><span class="cbtns"><button type="button" id="rcCopy" data-i18n="cCode" data-i18n-t="rcTxt">Code</button></span><div class="link" id="rcBox" hidden><input id="rcTxt" readonly aria-label="Resume code"></div></div>
     </details>
     <div class="card" id="startCard" hidden><h2 data-i18n="start">Start</h2><p class="hint" id="startTxt"></p><div class="confirm"><button type="button" class="primary" id="startBtn" data-i18n="startBtn">Start the game</button></div></div>
     <div class="card" id="endCard" hidden>
@@ -176,7 +176,7 @@ ol.log .tag{color:var(--muted);font-size:.72rem;margin-right:3px}
 <div class="sheetbg" id="sheetBg" hidden></div>
 </section>
 </div>
-<script src="common/core.js?v=43"></script>
+<script src="common/core.js?v=44"></script>
 <script src="common/codes.js?v=2"></script>
 <script src="common/ai.js?v=1"></script>
 <script>

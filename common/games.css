@@ -256,7 +256,7 @@ details .chatlist li{margin:0}
 
 /* spectators present: one line at the top of the chat frame; resume code under the invitation, in the same frame */
 .wline{margin:6px 0 0;font-size:.85rem;color:var(--muted)}
-#invPart:not([hidden])+.rcpart{margin-top:12px;padding-top:10px;border-top:1px solid var(--line)}
+#invPart:not([hidden])+.rcpart{margin-top:4px}
 .voicein{padding-top:8px;border-top:1px solid var(--line)}
 
 /* Layout trials (games-test, <html data-band>): on wide screens the players' cards form a band above the board. Each
@@ -287,13 +287,16 @@ html.ingame.wide .side > #chatBox[open] > .chatgrip{display:block;position:absol
 html.ingame.wide .side > #chatBox[open] > .chatgrip::after{content:"";position:absolute;left:50%;top:4px;width:36px;height:4px;margin-left:-18px;border-radius:2px;background:var(--line)}
 html.ingame.wide .side > #chatBox[open] > .chatgrip:hover::after{background:var(--muted)}
 html.ingame.band .player .tally{min-width:150px}
-/* Codes frame: one row per code (label, the code in clear, « copy the code », « copy the link ») */
+/* Codes frame: one compact row per code: label, the code in clear, two small buttons (code, link; « copy … » on hover) */
 .vh{position:absolute!important;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
-.coderow{display:flex;flex-wrap:wrap;align-items:center;gap:4px 8px}
-.side details .coderow{margin-top:8px}
-.coderow > .hint{flex:0 0 100%;margin:0!important;font-size:.8rem}
-.coderow .codetxt{flex:1 1 5em;min-width:5em;border:none;background:none;padding:0;font-family:var(--f-mono);font-size:1rem;letter-spacing:.04em;color:var(--ink)}
-.coderow .cbtns{display:flex;gap:6px;flex:none;margin-left:auto}
-.coderow .cbtns button{padding:4px 9px;font-size:.8rem}
-#invPart:has(#linksBox[hidden]) .lnk,#invPart:has(#oppLink[hidden]) #codePBox .lnk,#invPart:has(#watchLinkBox[hidden]) #codeWBox .lnk{display:none}
-#rcCard #rcBox{flex:0 0 100%}
+.coderow{display:grid;grid-template-columns:6.2em minmax(0,1fr) auto;align-items:center;column-gap:8px}
+.side details .coderow{margin-top:4px}
+.side details #invPart > .coderow:first-of-type{margin-top:8px}
+.coderow > .hint{margin:0!important;font-size:.82rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.coderow .codetxt{min-width:0;width:100%;border:none;background:none;padding:0;font-family:var(--f-mono);font-size:.9rem;color:var(--ink);text-overflow:ellipsis}
+.coderow .cbtns{display:flex;gap:4px}
+.coderow .cbtns button{padding:2px 8px;font-size:.78rem;line-height:1.4;min-width:3.6em}
+#invPart:has(#linksBox[hidden]) .lnk,#invPart:has(#oppLink[hidden]) #codePBox .lnk,#invPart:has(#watchLinkBox[hidden]) #codeWBox .lnk{visibility:hidden}
+#rcCard #rcBox{grid-column:1 / -1;margin-top:4px}
+/* the host's note only while waiting for the opponent */
+#inviteBox:not(.prominent) #hostNote{display:none}
