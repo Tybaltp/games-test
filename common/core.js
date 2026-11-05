@@ -504,7 +504,7 @@ function anaPlay(code){const n=anaNode(view.moves);if(!n)return;if(!n.c.some(x=>
 // The main line (the first child at each branching)
 function anaMainLine(){const p=[];let n=view.tree;while(n.c.length){n=n.c[0];p.push(n.m);}return p;}
 // Players' names: on one device « Player 1/2 »; against the computer « You » / « The computer »
-const seatName=s=>solo()?(role==='test'&&view.customNames&&view.names[s]||t(s===0?'p1':'p2')):role==='ai'?(s===meS()?t('you'):t('computer')):(view.names[s]||t(s===0?'p1':'p2'))+(s===mySeat?' ('+t('you').toLowerCase()+')':'');
+const seatName=s=>solo()?(role==='test'&&view.customNames&&view.names[s]||t(s===0?'p1':'p2')):role==='ai'?(s===meS()?t('you'):t('computer')):(view.names[s]||t(s===0?'p1':'p2'));
 
 // A player's name, editable in place (nothing shows it but the text cursor): Enter or leaving the field keeps it
 function nameEdit(sp,p){sp.className='nmEdit';sp.contentEditable='plaintext-only';sp.spellcheck=false;sp.title=t('editName');
