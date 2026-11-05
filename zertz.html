@@ -51,16 +51,6 @@ html.ingame:not(.wide) .board{border-radius:14px}
 .colors button{display:flex;align-items:center;gap:8px;flex:1;justify-content:center;font-family:var(--f-mono);font-variant-numeric:tabular-nums;font-size:1.05rem;padding:9px 12px;min-width:0}
 .colors .mb{width:18px;height:18px}
 .colors button[aria-pressed="true"]{border-color:var(--accent);box-shadow:0 0 0 2px var(--accent) inset}
-/* band layout (games-test): the three piles in a column left of the board, each a third of the height */
-html.ingame.band .zrow{flex:1 1 0;min-height:0;display:flex;gap:10px;align-items:stretch}
-html.ingame.band .zrow > .boardarea{flex:1 1 0;min-width:0;min-height:0}
-html.ingame.band .zrow > .poolbar{flex-direction:column;justify-content:center;gap:6px;width:clamp(60px,6vw,100px);min-height:0}
-html.ingame.band .zrow .plabel{white-space:normal;text-align:center}
-html.ingame.band .zrow .colors{flex-direction:column;flex:1 1 auto;width:100%;gap:8px;min-height:0}
-html.ingame.band .zrow .colors button{flex:1 1 0;flex-direction:column;justify-content:center;gap:6px;padding:6px 4px;min-height:0;font-size:.9rem}
-.pile{display:flex;flex-wrap:wrap;justify-content:center;align-content:center;gap:3px;max-width:calc(3 * var(--mbz) + 6px);--mbz:clamp(11px,1.2vw,16px)}
-.pile .mb{width:var(--mbz);height:var(--mbz);flex:none}
-.pn{font-size:.95rem}
 </style>
 </head><body>
 <div class="wrap">
@@ -412,21 +402,28 @@ function zzBoard({r,d,mine}){setBoard(ringsOf(view));if(ui.hover==null)ui.hover=
 function poolBar(st,r,mine,caps){const pool=[st[POOL],st[POOL+1],st[POOL+2]],n=pool[0]+pool[1]+pool[2],fromCap=n===0,cols=r.over?[]:E.colors(r.st);
   const lb=$('poolLbl');lb.hidden=!fromCap;lb.textContent=fromCap?t('poolLblE'):t('poolLbl',{n});lb.title=fromCap?t('h_empty'):t('pool')+' · '+t('poolN',{n});
   const hc=mine&&hintOn()&&hintMv.t===0?hintMv.c:-1,cb=$('colors');cb.textContent='';cb.setAttribute('aria-label',t('pool'));
-  for(let k=0;k<3;k++){const b=document.createElement('button');b.type='button';b.id='col'+k;
-    const v=fromCap&&mySeat>=0?st[CAP+mySeat*3+k]:pool[k];
-    b.innerHTML=zBandOn()?`<span class="pile">${`<span class="mb c${k}"></span>`.repeat(v)}</span><span class="pn">${v}</span>`:`<span class="mb c${k}"></span>${v}`;
-    b.setAttribute('aria-pressed',String(hc>=0?hc===k:mine&&ui.color===k));b.setAttribute('aria-label',CN(k)+', '+v);b.title=CN(k);
-    b.disabled=!(mine&&!ui.pending&&!caps&&cols.includes(k));
-    b.onclick=()=>{if(busy==='hint')stopAI();hintMv=null;ui.color=k;ui.at=null;ui.hover=-1;ui.tap=-1;renderGame();};cb.appendChild(b);}
-  zPlace();}
-// Band layout (games-test, wide screens): the pool becomes three piles in a column left of the board, part of the game's
-// area; each pile shows its marbles, and a click picks the colour to place
+  const items=[0,1,2].map(k=>({k,v:fromCap&&mySeat>=0?st[CAP+mySeat*3+k]:pool[k],on:hc>=0?hc===k:mine&&ui.color===k,
+    ok:mine&&!ui.pending&&!caps&&cols.includes(k),pick:()=>{if(busy==='hint')stopAI();hintMv=null;ui.color=k;ui.at=null;ui.hover=-1;ui.tap=-1;renderGame();}}));
+  const band=zBandOn();$('poolBar').hidden=band;
+  if(band){poolSvg(items,fromCap);return;}
+  document.documentElement.style.removeProperty('--board-ar');
+  for(const it of items){const b=document.createElement('button');b.type='button';b.id='col'+it.k;
+    b.innerHTML=`<span class="mb c${it.k}"></span>${it.v}`;
+    b.setAttribute('aria-pressed',String(it.on));b.setAttribute('aria-label',CN(it.k)+', '+it.v);b.title=CN(it.k);
+    b.disabled=!it.ok;b.onclick=it.pick;cb.appendChild(b);}}
+// Band layout (games-test, wide screens): the pool inside the board's frame, a column on the left of the rings: three
+// framed buttons, each a marble and its count under it; the colour picked has the accent frame
 const zBandOn=()=>typeof BAND!=='undefined'&&!!BAND&&isWide();
-function zPlace(){const ba=document.querySelector('.boardwrap .boardarea'),pb=$('poolBar');if(!ba||!pb)return;let row=$('zRow');
-  if(zBandOn()){if(!row){row=document.createElement('div');row.id='zRow';row.className='zrow';}if(ba.parentNode!==row)ba.before(row);
-    if(row.children[0]!==pb||row.children[1]!==ba)row.append(pb,ba);}
-  else if(row)row.replaceWith(ba,pb);}
-window.addEventListener('resize',()=>{const was=!!$('zRow');if(was!==zBandOn()&&view&&!$('game').hidden)renderGame();});
+function poolSvg(items,fromCap){const svg=$('svg'),vb=svg.getAttribute('viewBox').split(' ').map(Number),PW=120,x0=vb[0]-PW,h=vb[3];
+  svg.setAttribute('viewBox',`${x0} ${vb[1]} ${vb[2]+PW} ${h}`);document.documentElement.style.setProperty('--board-ar',`${vb[2]+PW}/${h}`);
+  const bh=Math.min(150,(h-60)/3),gap=14,top=vb[1]+(h-3*bh-2*gap)/2,bw=PW-24,bx=x0+12;
+  if(fromCap){const tx=el('text',{x:bx+bw/2,y:top-14,'text-anchor':'middle','font-size':14,fill:'var(--ghost)'},svg);tx.textContent=t('poolLblE');}
+  items.forEach((it,j)=>{const y=top+j*(bh+gap),g=el('g',{role:'button','aria-label':CN(it.k)+', '+it.v,opacity:it.ok||it.on?1:.45,style:it.ok?'cursor:pointer':''},svg);
+    el('rect',{x:bx,y,width:bw,height:bh,rx:14,fill:'transparent',stroke:it.on?'var(--accent)':'var(--ghost)','stroke-width':it.on?3.5:1.5},g);
+    marble(g,bx+bw/2,y+bh*.42,it.k);
+    const tx=el('text',{x:bx+bw/2,y:y+bh*.42+48,'text-anchor':'middle','font-family':'IBM Plex Mono, monospace','font-size':22,fill:'var(--ring)'},g);tx.textContent=String(it.v);
+    el('title',{},g).textContent=CN(it.k);if(it.ok)g.addEventListener('click',it.pick);});}
+window.addEventListener('resize',()=>{if(zBandOn()===$('poolBar').hidden||!view||$('game').hidden)return;renderGame();});
 // Nothing engaged: Undo last move / Hint · something engaged (a marble placed, a capture started, a first tap): Reset
 function zzTurnStatus({r,o,prep,idle,RST}){
   if(o.caps)status(t(ui.path?'st_capPath':'st_capStart'),'turn',prep?[RST]:idle);
