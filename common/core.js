@@ -640,9 +640,9 @@ function chatDock(w){const b=$('chatBox'),sd=$('side'),sc=$('sideScroll');if(!b|
 // the list takes what the docked frame's height leaves
 function chatFit(){const b=$('chatBox'),l=$('chatList');if(!b||!l)return;
   if(!isWide()||!b.open||b.hidden){if(l.style.height)l.style.height='';return;}
-  const sd=$('side'),mx=Math.max(180,(sd?sd.clientHeight:600)-110);if(CH.h==null)CH.h=+LS.get('games-chath',300)||300;
-  const H=CH.h=Math.min(mx,Math.max(170,CH.h)),st=l.scrollTop,end=l.scrollHeight-l.clientHeight-st<4;
-  l.style.height='0px';const rest=b.offsetHeight;l.style.height=Math.max(50,H-rest)+'px';l.scrollTop=end?l.scrollHeight:st;}
+  const sd=$('side'),mx=Math.max(180,(sd?sd.clientHeight:600)-110);if(CH.h==null)CH.h=+LS.get('games-chath',0)||Math.round((sd?sd.clientHeight:600)*.5);
+  const H=CH.h=Math.min(mx,Math.max(260,CH.h)),st=l.scrollTop,end=l.scrollHeight-l.clientHeight-st<4;
+  const rest=b.offsetHeight-l.offsetHeight,px=Math.max(110,H-rest)+'px';if(l.style.height!==px)l.style.height=px;l.scrollTop=end?l.scrollHeight:st;}
 function layoutMode(){const w=isWide();chatDock(w);document.documentElement.classList.toggle('wide',w);if(w)sheet(false);
   const n=$('notice'),at=w&&!BAND?$('playersSide'):$('nav');document.documentElement.classList.toggle('band',w&&!!BAND);if(n&&at&&n.previousElementSibling!==at)at.after(n);}
 // Not wide: the board's area gets a fixed height, so that the action bar can grow up to --barMax under it without the
