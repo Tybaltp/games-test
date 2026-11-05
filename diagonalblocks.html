@@ -75,7 +75,9 @@ html.ingame.band .dbrow > .boardarea{flex:1 1 0;min-width:0;min-height:0}
 html.ingame.band .dbrow > .pwrap{flex:none;justify-content:center!important}
 html.ingame.band .dbrow .pblock{padding:6px;max-height:100%}
 html.ingame.band .dbrow .pblock .pinfo{display:none}
-html.ingame.band .dbrow .pblock .tray{flex:none;width:calc(var(--cell) * 18 + 4px)}
+html.ingame.band .dbrow .pblock .tray{flex:none;width:calc(var(--cell) * 6 * var(--cols,3) + (var(--cols,3) - 1) * 2px)}
+/* cards in the band: when the name does not fit, cells and pieces go on two lines */
+html.ingame.band #playersTop > .player.fit1 .tally,html.ingame.band #playersTop > .player.fit2 .tally{flex-direction:column;gap:0}
 html.ingame.band .dbrow #oppBlock{opacity:.6}html.ingame.band .dbrow #oppBlock.active{opacity:.8}
 .slot{padding:3px;border:1.5px solid transparent;border-radius:7px;background:transparent;line-height:0}
 .slot svg{width:100%;height:auto;display:block}
@@ -441,8 +443,6 @@ function fillTray(box,st,c,live){box.textContent='';box.classList.toggle('live',
 // Phones: each block's wrapper keeps the height the block has with a full reserve, so the board never changes size.
 // Band layout (games-test, wide screens): the cards stay in the band above the board, each reserve becomes a column on
 // its owner's side of the board (seat 0 left, seat 1 right, like the cards); mine at full size, the opponent's smaller.
-// The cell size: the largest (16 px at most, my reserve a fifth of the row's width at most) for which my reserve, three
-// slots wide, fits the board's height.
 function placeBand(){const ob=$('oppBlock'),mb=$('myBlock'),ow=$('oppWrap'),mw=$('myWrap'),n=$('notice'),nv=$('nav'),
     ba=document.querySelector('.boardwrap .boardarea');if(!ob||!mb||!ba||!nv)return;
   const r=replay(view,view.moves,view.result),{top,bot}=seatsShown(r);
@@ -452,10 +452,15 @@ function placeBand(){const ob=$('oppBlock'),mb=$('myBlock'),ow=$('oppWrap'),mw=$
   for(const [b,p] of [[ob,top],[mb,bot]]){b.hidden=false;const c=$('pl'+p);b.classList.toggle('active',!!(c&&c.classList.contains('active')));}
   if(n.parentNode!==nv.parentNode||n.previousElementSibling!==nv)nv.after(n);
   for(const W_ of [ow,mw])W_.style.minHeight='';
-  const H=row.clientHeight-16;if(H<=0)return;let cell=Math.min(16,Math.floor((row.clientWidth*.19-16)/18*2)/2);   // my reserve: a fifth of the width at most
-  cell=Math.max(5,cell);for(;cell>5;cell-=.5){mb.style.setProperty('--cell',cell+'px');if($('myTray').scrollHeight<=H)break;}
-  mb.style.setProperty('--cell',cell+'px');
-  ob.style.setProperty('--cell',Math.max(5,Math.round(cell*.7*2)/2)+'px');}
+  // the layout that leaves the board the most room: 1 to 3 slots per row in the reserves, the largest cell (7 to 16 px,
+  // mine; the opponent's 70 %) for which mine fits the height; ties go to the larger pieces
+  const H=row.clientHeight-16,Wd=row.clientWidth;if(H<=0||Wd<=0)return;const key=[H,Wd,lang].join('/');
+  if(placeBand.key!==key){placeBand.key=key;let best=null;const T=$('myTray'),oT=$('oppTray');
+    for(const cols of [1,2,3])for(let cell=16;cell>=7;cell-=.5){mb.style.setProperty('--cols',cols);mb.style.setProperty('--cell',cell+'px');
+      if(T.scrollHeight>H)continue;const oc=Math.max(5,Math.round(cell*1.4)/2),tw=cols*6*(cell+oc)+60,side=Math.min(H,Wd-tw);
+      if(!best||side>best.side+1||(Math.abs(side-best.side)<=1&&cell>best.cell))best={cols,cell,oc,side};break;}
+    if(!best)best={cols:3,cell:7,oc:5};placeBand.best=best;}
+  const b=placeBand.best;for(const [B,c] of [[mb,b.cell],[ob,b.oc]]){B.style.setProperty('--cols',b.cols);B.style.setProperty('--cell',c+'px');}}
 function holdHeights(w){const pairs=[['oppWrap','oppBlock','oppTray'],['myWrap','myBlock','myTray']].map(([a,b,c])=>[$(a),$(b),$(c)]);
   if(pairs.some(([W_,B,T])=>!W_||!T.clientWidth))return;
   // a block's height for a cell size: its frame and action bar (if inside), plus the taller of the card and the full reserve
@@ -480,7 +485,7 @@ function renderTrays(st,live){const r=replay(view,view.moves,view.result),{top,b
 // (both sides on one screen: in a frame of its own under the blocks); phones: the opponent's block above the board, mine
 // under it; wide screens: both at the top of the side panel
 function placeBlocks(){if(!view||$('game').hidden)return;if(BAND&&isWide()){placeBand();return;}
-  {const row=$('dbRow'),ba=document.querySelector('.boardarea');if(row&&ba&&ba.parentNode===row){row.before(ba);row.remove();}}
+  {const row=$('dbRow');if(row)row.replaceWith(...row.childNodes);}   // back from the band layout: the reserves and the board out of the row
   const ob=$('oppBlock'),mb=$('myBlock'),n=$('notice'),w=isWide();
   if(!ob||!mb||!n||!ob.querySelector||!ob.querySelector('.pinfo'))return;   // (the test harness's minimal DOM)
   const r=replay(view,view.moves,view.result),{top,bot}=seatsShown(r);
