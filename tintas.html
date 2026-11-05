@@ -6,7 +6,7 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/peerjs/1.5.4/peerjs.min.js"></script>
 <script>if(typeof Peer==='undefined')document.write('<script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"><\/script>');</script>
-<link rel="stylesheet" href="common/games.css?v=28">
+<link rel="stylesheet" href="common/games.css?v=29">
 <style>
 /* Tintas palette (light, dark), board and colour counters; the shared layout is in common/games.css */
 :root{
@@ -42,9 +42,9 @@ html.ingame:not(.wide) .board{background:radial-gradient(120% 90% at 50% 30%,var
 .tk{display:flex;flex-direction:column;align-items:center;gap:2px;border:1.5px solid transparent;border-radius:6px;padding:2px 0 1px;font-family:var(--f-mono);font-variant-numeric:tabular-nums;font-size:.72rem;line-height:1;color:var(--muted);min-width:0}
 .tk svg{width:14px;height:14px;display:block;flex:none}
 /* players' cards above the board, a name too long (core: fit1, fit2): the counters close up, then go on two rows */
-html.band .player.fit1 .tally,html.band .player.fit2 .tally{min-width:0;width:auto;max-width:none;grid-template-columns:repeat(7,auto);gap:1px}
-html.band .player.fit2 .tally{grid-template-columns:repeat(4,auto)}
-html.band .player.fit1 .tk,html.band .player.fit2 .tk{min-width:18px}
+html.band #playersTop > .player.fit1 .tally,html.band #playersTop > .player.fit2 .tally{min-width:0;width:auto;max-width:none;grid-template-columns:repeat(7,auto);gap:1px}
+html.band #playersTop > .player.fit2 .tally{grid-template-columns:repeat(4,auto)}
+html.band #playersTop > .player.fit1 .tk,html.band #playersTop > .player.fit2 .tk{min-width:18px}
 .tk.has{color:var(--ink)}
 .tk.maj{border-color:var(--ink);color:var(--ink);font-weight:600}
 .tk.full{background:var(--accent);border-color:var(--accent);color:var(--accent-ink);font-weight:600}
