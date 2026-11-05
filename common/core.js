@@ -596,7 +596,7 @@ function renderGame(){if(!view)return;if(role==='ai')LS.set(AK(),{view,mySeat});
     if(net){const ws=Array.isArray(view.wnames)?view.wnames:[],n=view.watchers||0;
       const items=n?ws.map(x=>x||t('anon')).sort((a,b)=>a.localeCompare(b)):[];
       const txt=!n?t('noSpect'):t('watchersT',{n})+(lang==='fr'?'\u00a0: ':': ')+items.join(', ');if(wl.textContent!==txt)wl.textContent=txt;}}
-  chatRender();voiceRender();
+  chatRender();voiceRender();chatFit();
   $('endCard').hidden=!r.over&&role!=='file'&&!(A&&(role==='local'||role==='ai'));   // the analysis of a game over keeps the way to a new one   // a game read from a file: always the way back home
   {const pl=mySeat>=0&&(role==='host'||role==='guest'||role==='ai'||solo()),rm=role==='ai'||solo()?null:view.rematch,opp=view.names[1-mySeat]||t(mySeat?'p1':'p2');
     const asked=!!rm&&rm.st==='ask',mineRm=!!rm&&rm.from===mySeat,txt=asked?(mineRm?t('rm_sent'):t('rm_ask',{n:opp})):rm&&rm.st==='no'&&mineRm?t('rm_no',{n:opp}):'';
@@ -631,7 +631,19 @@ function sheet(on){const R=document.documentElement,was=R.classList.contains('sh
   if(!on&&was&&$('side').contains(document.activeElement))$('optBtn').focus({preventScroll:true});}
 // Wide: the action bar (#notice) goes into the side panel under the players' cards (the panel's fixed top part); otherwise
 // back under the board (after the move navigation). The same element moves, nothing is duplicated.
-function layoutMode(){const w=isWide();document.documentElement.classList.toggle('wide',w);if(w)sheet(false);
+function chatDock(w){const b=$('chatBox'),sd=$('side'),sc=$('sideScroll');if(!b||!sd||!sc)return;
+  if(!b.querySelector('.chatgrip')){const g=document.createElement('div');g.className='chatgrip';g.setAttribute('aria-hidden','true');b.prepend(g);
+    g.onpointerdown=e=>{if(!isWide())return;e.preventDefault();g.setPointerCapture(e.pointerId);const y0=e.clientY,h0=b.offsetHeight;
+      g.onpointermove=ev=>{CH.h=h0+(y0-ev.clientY);chatFit();};
+      g.onpointerup=g.onpointercancel=()=>{g.onpointermove=null;LS.set('games-chath',Math.round(CH.h));};};}
+  if(w){if(b.parentNode!==sd)sd.appendChild(b);}else if(b.parentNode!==sc)$('myCard').before(b);chatFit();}
+// the list takes what the docked frame's height leaves
+function chatFit(){const b=$('chatBox'),l=$('chatList');if(!b||!l)return;
+  if(!isWide()||!b.open||b.hidden){if(l.style.height)l.style.height='';return;}
+  const sd=$('side'),mx=Math.max(180,(sd?sd.clientHeight:600)-110);if(CH.h==null)CH.h=+LS.get('games-chath',300)||300;
+  const H=CH.h=Math.min(mx,Math.max(170,CH.h)),st=l.scrollTop,end=l.scrollHeight-l.clientHeight-st<4;
+  l.style.height='0px';const rest=b.offsetHeight;l.style.height=Math.max(50,H-rest)+'px';l.scrollTop=end?l.scrollHeight:st;}
+function layoutMode(){const w=isWide();chatDock(w);document.documentElement.classList.toggle('wide',w);if(w)sheet(false);
   const n=$('notice'),at=w&&!BAND?$('playersSide'):$('nav');document.documentElement.classList.toggle('band',w&&!!BAND);if(n&&at&&n.previousElementSibling!==at)at.after(n);}
 // Not wide: the board's area gets a fixed height, so that the action bar can grow up to --barMax under it without the
 // board ever changing size (the room the bar does not use stays empty). Games that lay out the board themselves
@@ -1081,7 +1093,7 @@ function coreStart(){if(window.ResizeObserver&&$('notice'))new ResizeObserver(()
   $('voiceAsk').onclick=voiceAsk;$('voiceCancel').onclick=()=>{if(V.st==='out'){voiceSend('cancel');V={st:'off',note:''};voiceUi();}};
   $('voiceYes').onclick=()=>voiceAnswer(true);$('voiceNo').onclick=()=>voiceAnswer(false);$('voiceMute').onclick=voiceMute;$('voiceHang').onclick=()=>voiceStop(t('vEnd'),true);
   {const r=$('voiceVol');r.value=voiceVol();r.addEventListener('input',()=>{LS.set('games-voicevol',+r.value);if(V.audio)V.audio.volume=(+r.value)/100;});}
-  $('chatBox').addEventListener('toggle',()=>{if(view){chatRender();sheetAttn();}});
+  $('chatBox').addEventListener('toggle',()=>{if(view){chatRender();sheetAttn();}chatFit();});window.addEventListener('resize',()=>chatFit());
   $('nameOv').onsubmit=e=>{e.preventDefault();nameOvDone(false);};$('nameOvAnon').onclick=()=>nameOvDone(true);
   if(GAME.levels){for(const id of ['aLevel','gLevel'])if($(id))$(id).addEventListener('change',e=>{level=e.target.value;LS.set(K('level'),level);$('aLevel').value=level;$('gLevel').value=level;});
     if($('aiForm'))$('aiForm').addEventListener('submit',e=>{e.preventDefault();const nm=$('hName').value.trim();if(nm)nickSet(nm);startAI(aiFirst(),GAME.form('a'));});}

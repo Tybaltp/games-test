@@ -278,3 +278,11 @@ html.ingame.band .boardwrap > .notice.empty{visibility:hidden}
 html.ingame.band .player.c1{order:2}
 /* the bar under the board, once its sentence has gone up: buttons only, no frame */
 html.ingame.band[data-band="haut"] .boardwrap > .notice{background:none;border-color:transparent;box-shadow:none}
+/* wide screens: the chat docked at the bottom of the side column (chatDock), its height dragged from the top edge;
+   the other frames scroll in what is left above it */
+.chatgrip{display:none}
+html.ingame.wide .side > #chatBox{position:relative;flex:none;margin-top:0}
+html.ingame.wide .side > #chatBox .chatlist{min-height:0;max-height:none}
+html.ingame.wide .side > #chatBox[open] > .chatgrip{display:block;position:absolute;left:0;right:0;top:-7px;height:12px;margin:0;cursor:ns-resize;touch-action:none;z-index:2}
+html.ingame.wide .side > #chatBox[open] > .chatgrip::after{content:"";position:absolute;left:50%;top:4px;width:36px;height:4px;margin-left:-18px;border-radius:2px;background:var(--line)}
+html.ingame.wide .side > #chatBox[open] > .chatgrip:hover::after{background:var(--muted)}
