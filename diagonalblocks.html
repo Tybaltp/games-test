@@ -80,8 +80,10 @@ html.ingame.band .dbside .pblock .prow{justify-content:center}
 /* the side column at the shared width (this page widens it elsewhere for its reserves, which are now by the board) */
 html.ingame.band.wide .wrap{grid-template-columns:minmax(0,1fr) 300px}
 html.ingame.band .dbside .pblock .pinfo{display:none}
-/* the reserves on a regular grid: each piece centred, across and down, in a square of the largest piece's size */
-html.ingame.band .dbside .pblock .tray{flex:none;display:grid;grid-template-columns:repeat(var(--cols,3),calc(var(--cell) * 6));grid-auto-rows:calc(var(--cell) * 6);place-items:center;justify-content:center;gap:2px;width:calc(var(--cell) * 6 * var(--cols,3) + (var(--cols,3) - 1) * 2px)}
+/* the reserves on a regular grid: each piece centred, across and down, in a track as long as the longest piece */
+html.ingame.band .dbside .pblock .tray{flex:none;display:grid;grid-template-columns:repeat(var(--cols,3),calc(var(--cell) * 5));grid-auto-rows:calc(var(--cell) * 5);place-items:center;justify-content:center;gap:0;width:calc(var(--cell) * 5 * var(--cols,3))}
+/* tracks of 5 cells (the longest piece): a square's empty margin may spill over its neighbours' */
+html.ingame.band .dbside .pblock .slot{overflow:visible}html.ingame.band .dbside .pblock .slot svg{overflow:visible}
 html.ingame.band #oppBlock{opacity:.7}html.ingame.band #oppBlock.active{opacity:.9}
 /* cards in the band: when the name does not fit, cells and pieces go on two lines */
 html.ingame.band #playersTop > .player.fit1 .tally,html.ingame.band #playersTop > .player.fit2 .tally{flex-direction:column;gap:0}
@@ -466,7 +468,7 @@ function placeBand(){const ob=$('oppBlock'),mb=$('myBlock'),ow=$('oppWrap'),mw=$
   const H=row.clientHeight,Wd=row.clientWidth;if(H<=0||Wd<=0)return;const key=[H,Wd].join('/');
   if(placeBand.key!==key){placeBand.key=key;let best=null;const T=$('myTray'),Hh=(H-8)/2-16;   // each reserve: half the height
     for(const cols of [1,2,3,4])for(let cell=16;cell>=8;cell-=.5){for(const B of [mb,ob]){B.style.setProperty('--cols',cols);B.style.setProperty('--cell',cell+'px');}
-      if(fullTray(T,cell).h>Hh)continue;const side=Math.min(H,Wd-cols*6*cell-(cols-1)*2-28);
+      if(fullTray(T,cell).h>Hh)continue;const side=Math.min(H,Wd-cols*5*cell-28);
       if(!best||side>best.side*1.02||(side>=best.side/1.02&&cell>best.cell))best={cols,cell,side};break;}
     placeBand.best=best||{cols:4,cell:8};}
   const b=placeBand.best;for(const B of [mb,ob]){B.style.setProperty('--cols',b.cols);B.style.setProperty('--cell',b.cell+'px');}}
