@@ -287,3 +287,13 @@ html.ingame.wide .side > #chatBox[open] > .chatgrip{display:block;position:absol
 html.ingame.wide .side > #chatBox[open] > .chatgrip::after{content:"";position:absolute;left:50%;top:4px;width:36px;height:4px;margin-left:-18px;border-radius:2px;background:var(--line)}
 html.ingame.wide .side > #chatBox[open] > .chatgrip:hover::after{background:var(--muted)}
 html.ingame.band .player .tally{min-width:150px}
+/* Codes frame: one row per code (label, the code in clear, « copy the code », « copy the link ») */
+.vh{position:absolute!important;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.coderow{display:flex;flex-wrap:wrap;align-items:center;gap:4px 8px}
+.side details .coderow{margin-top:8px}
+.coderow > .hint{flex:0 0 100%;margin:0!important;font-size:.8rem}
+.coderow .codetxt{flex:1 1 5em;min-width:5em;border:none;background:none;padding:0;font-family:var(--f-mono);font-size:1rem;letter-spacing:.04em;color:var(--ink)}
+.coderow .cbtns{display:flex;gap:6px;flex:none;margin-left:auto}
+.coderow .cbtns button{padding:4px 9px;font-size:.8rem}
+#invPart:has(#linksBox[hidden]) .lnk,#invPart:has(#oppLink[hidden]) #codePBox .lnk,#invPart:has(#watchLinkBox[hidden]) #codeWBox .lnk{display:none}
+#rcCard #rcBox{flex:0 0 100%}
