@@ -41,6 +41,10 @@ html.ingame:not(.wide) .board{background:radial-gradient(120% 90% at 50% 30%,var
 .player .tally{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:2px;max-width:210px;width:100%}
 .tk{display:flex;flex-direction:column;align-items:center;gap:2px;border:1.5px solid transparent;border-radius:6px;padding:2px 0 1px;font-family:var(--f-mono);font-variant-numeric:tabular-nums;font-size:.72rem;line-height:1;color:var(--muted);min-width:0}
 .tk svg{width:14px;height:14px;display:block;flex:none}
+/* players' cards above the board, a name too long (core: fit1, fit2): the counters close up, then go on two rows */
+html.band .player.fit1 .tally,html.band .player.fit2 .tally{min-width:0;width:auto;max-width:none;grid-template-columns:repeat(7,auto);gap:1px}
+html.band .player.fit2 .tally{grid-template-columns:repeat(4,auto)}
+html.band .player.fit1 .tk,html.band .player.fit2 .tk{min-width:18px}
 .tk.has{color:var(--ink)}
 .tk.maj{border-color:var(--ink);color:var(--ink);font-weight:600}
 .tk.full{background:var(--accent);border-color:var(--accent);color:var(--accent-ink);font-weight:600}
@@ -174,7 +178,7 @@ ol.log .tag{color:var(--muted);font-size:.72rem;margin-right:3px}
 <div class="sheetbg" id="sheetBg" hidden></div>
 </section>
 </div>
-<script src="common/core.js?v=40"></script>
+<script src="common/core.js?v=41"></script>
 <script src="common/codes.js?v=2"></script>
 <script src="common/ai.js?v=1"></script>
 <script>

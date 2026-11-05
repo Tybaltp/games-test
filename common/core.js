@@ -566,6 +566,7 @@ function renderGame(){if(!view)return;if(role==='ai')LS.set(AK(),{view,mySeat});
     if(role==='test'||role==='file')nameEdit(nmx,p);
     const ck=document.createElement('div');ck.className='clock';ck.id='clock'+p;if(!view.tc)ck.hidden=true;
     el.append(h,ck);if(GAME.playerCard)GAME.playerCard(el,p,d);host.appendChild(el);}
+  if(BAND)requestAnimationFrame(fitCards);
   if(BAND==='haut'){if(bandOn()){if(bandMsg.parentNode!==host||bandMsg.nextElementSibling)host.appendChild(bandMsg);}else bandMsg.remove();bandSync();}
   tick();lockBoard();
   // side panel: settings only (level of the computer and its opinion, against the computer only: hints use GAME.hintLevel)
@@ -643,6 +644,11 @@ function chatFit(){const b=$('chatBox'),l=$('chatList');if(!b||!l)return;
   const sd=$('side'),mx=Math.max(180,(sd?sd.clientHeight:600)-110);if(CH.h==null)CH.h=+LS.get('games-chath',0)||Math.round((sd?sd.clientHeight:600)*.5);
   const H=CH.h=Math.min(mx,Math.max(260,CH.h)),st=l.scrollTop,end=l.scrollHeight-l.clientHeight-st<4;
   const rest=b.offsetHeight-l.offsetHeight,px=Math.max(110,H-rest)+'px';if(l.style.height!==px)l.style.height=px;l.scrollTop=end?l.scrollHeight:st;}
+// cards in the band: when a name does not fit, the game's information gets more compact, step by step (classes fit1,
+// fit2, drawn by the game's CSS), until the name fits or the steps run out
+function fitCards(){for(const el of document.querySelectorAll('#playersTop > .player')){const w=el.querySelector('.who');if(!w)continue;
+  el.classList.remove('fit1','fit2');for(const k of ['fit1','fit2']){if(w.scrollWidth<=w.clientWidth+1)break;el.classList.add(k);}}}
+window.addEventListener('resize',()=>{if(BAND)fitCards();});
 function layoutMode(){const w=isWide();chatDock(w);document.documentElement.classList.toggle('wide',w);if(w)sheet(false);
   const n=$('notice'),at=w&&!BAND?$('playersSide'):$('nav');document.documentElement.classList.toggle('band',w&&!!BAND);if(n&&at&&n.previousElementSibling!==at)at.after(n);}
 // Not wide: the board's area gets a fixed height, so that the action bar can grow up to --barMax under it without the
