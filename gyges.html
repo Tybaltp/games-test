@@ -655,10 +655,9 @@ function drawBoard(st,opt){const svg=$('svg');svg.textContent='';const o=opt.o,p
         el('text',{x:X(i),y:Y(i)+6,'text-anchor':'middle','font-family':'IBM Plex Mono, monospace','font-size':17,fill:'var(--muted)','pointer-events':'none'},hidG).textContent='?';}
       el('text',{x:180,y:y+5,'text-anchor':'middle','font-size':13,fill:'var(--lbl)','pointer-events':'none'},svg).textContent=t('hiddenRow');}
     else if(setup&&band){const rs=E.reserve(st,q),seen=[0,0,0,0],low=y===bot,xs=low?RX:RXo;
-      // the goal, already in place; the reserve beside the board on two columns (from the bottom on the left, from the top
+      // the goal, already in place; the reserve beside the board on two columns, on the page's background (from the bottom on the left, from the top
       // on the right), the slots of the pieces already placed left empty
       el('circle',{cx:180,cy:y,r:GR,fill:'var(--hole)',stroke:'var(--hole-e)','stroke-width':1.6,'pointer-events':'none'},svg);
-      el('rect',{x:xs[0]-CS/2-4,y:low?bot-2.5*CS-4:top-CS/2-4,width:2*CS+8,height:3*CS+8,rx:14,fill:'var(--wood)',opacity:.55,'pointer-events':'none'},svg);
       [1,1,2,2,3,3].forEach((k,j)=>{seen[k]++;if(seen[k]>rs[k])return;const x=xs[j%2],yy=low?bot-((j/2)|0)*CS:top+((j/2)|0)*CS;
         const mineR=o&&(opt.interactive||opt.prep)&&q===mySeat,gg=el('g',mineR?{class:'cell','data-i':'r'+k}:{},svg);
         el('circle',{cx:x,cy:yy,r:CS/2,fill:'transparent'},gg);piece(gg,x,yy,k,PR);
