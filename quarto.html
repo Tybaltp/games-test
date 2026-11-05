@@ -355,8 +355,13 @@ function drawBoard(sc){const svg=$('svg');svg.textContent='';gradDefs(svg);if(qV
 function ring2D(svg,p,X,Y,R0,kind){const R=R0*1.05,a=R*.9,st={...fr(kind),...(p&2&&!(p&1)?{stroke:'#d49a00'}:{})};
   if(p&4)el('rect',{x:f1(X-a),y:f1(Y-a),width:f1(2*a),height:f1(2*a),rx:f1(R*.08),...st},svg);else el('circle',{cx:f1(X),cy:f1(Y),r:f1(R),...st},svg);}
 // 2D: board of 4×4 square cells with lines between them, the reserve (16 slots, each piece keeps its own) below
-function draw2D(svg,sc){const S=80,m=10,B=4*S+2*m,lw=coordsOn?22:0,gap=coordsOn?28:14,rs=B/8,rh=rs*1.05,Y0=B+gap;
-  const W=B+lw+4,H=Y0+2*rh+4;svg.setAttribute('viewBox',`${-lw} 0 ${W} ${H}`);document.documentElement.style.setProperty('--board-ar',`${W}/${H}`);
+// Band layout (games-test, wide screens), view from above: the reserve in a column left of the board (2×8); in 3D the
+// board is wider than tall and the reserve stays under it
+const qBandOn=()=>typeof BAND!=='undefined'&&!!BAND&&isWide();
+window.addEventListener('resize',()=>{if(qBandOn()!==!!qBandOn.was&&view&&!$('game').hidden)renderGame();});
+function draw2D(svg,sc){const S=80,m=10,B=4*S+2*m,lw=coordsOn?22:0,band=qBandOn.was=qBandOn(),gap=coordsOn?28:14;
+  const C=band?2:8,rs=band?B/8:B/8,rh=band?B/8:rs*1.05,X0=band?-lw-14-2*rs:0,Y0=band?0:B+gap;
+  const x0=band?X0-4:-lw,W=band?B+4-x0:B+lw+4,H=band?B+(coordsOn?24:4):Y0+2*rh+4;svg.setAttribute('viewBox',`${x0} 0 ${W} ${H}`);document.documentElement.style.setProperty('--board-ar',`${W}/${H}`);
   el('rect',{x:0,y:0,width:B,height:B,rx:6,fill:'var(--wood)'},svg);
   const L=[];for(let i=0;i<=4;i++){const q=m+i*S;L.push(`M${m},${q}H${m+4*S}`,`M${q},${m}V${m+4*S}`);}
   el('path',{d:L.join(''),stroke:'var(--grid)','stroke-width':2,fill:'none','stroke-linecap':'square'},svg);
@@ -367,8 +372,8 @@ function draw2D(svg,sc){const S=80,m=10,B=4*S+2*m,lw=coordsOn?22:0,gap=coordsOn?
     const fk=sc.cellFr[i];
     if(fk&&c)ring2D(svg,c.p,x+S/2,y+S/2,S*.36,fk);else if(fk)el('rect',{x:x+4,y:y+4,width:S-8,height:S-8,rx:5,...fr(fk)},svg);}
   if(sc.win)el('polygon',{points:winOutline(sc.win).map(([u,v])=>f1(m+(u+2)*S)+','+f1(m+(v+2)*S)).join(' '),'stroke-linejoin':'round',...fr('win')},svg);
-  el('rect',{x:0,y:Y0-4,width:B,height:2*rh+8,rx:8,fill:'var(--res)'},svg);
-  for(let p=0;p<16;p++){const x=(p%8)*rs,y=Y0+((p/8)|0)*rh,k='r'+p,g=el('g',sc.click.has(k)?{class:'cell','data-k':k}:{},svg);
+  if(band)el('rect',{x:X0-4,y:0,width:C*rs+8,height:B,rx:8,fill:'var(--res)'},svg);else el('rect',{x:0,y:Y0-4,width:B,height:2*rh+8,rx:8,fill:'var(--res)'},svg);
+  for(let p=0;p<16;p++){const x=X0+(p%C)*rs,y=Y0+((p/C)|0)*rh,k='r'+p,g=el('g',sc.click.has(k)?{class:'cell','data-k':k}:{},svg);
     el('rect',{x,y,width:rs,height:rh,fill:sc.resHov===p?'var(--hov)':'transparent',rx:6},g);
     const c=sc.res[p];if(c){piece2D(g,c.p,x+rs/2,y+rh/2,rs*.36,c.op);el('title',{},g).textContent=pieceName(p);}
     const fk=sc.resFr[p];if(fk&&c)ring2D(svg,c.p,x+rs/2,y+rh/2,rs*.36,fk);else if(fk)el('rect',{x:x+2,y:y+2,width:rs-4,height:rh-4,rx:6,...fr(fk)},svg);}}
@@ -381,9 +386,10 @@ function ringPts(P,x0,y0,p){const h=.38,rr=p&4?.1:h,q=[];
 function drawIso(svg,sc){const S=60,hb=2.18,T=.16,P=(x,y,z)=>prj(S,x,y,z);
   const cx=i=>(i%4)-1.5,cy=i=>((i/4)|0)-1.5;
   const left=P(-hb,hb)[0],right=P(hb,-hb)[0],top=Math.min(P(-hb,-hb)[1],P(-1.5,-1.5,TALL)[1]-PR*1.3*S*SQ)-4,bot=P(hb,hb,-T)[1];
-  const lbl=coordsOn?22:0,Bw=right-left,gap=lbl+12,rs=Bw/8,rh=rs*1.25,Y0=bot+gap;
-  const W=Bw+2*lbl+8,H=(Y0-top)+2*rh+6;
-  svg.setAttribute('viewBox',`${f1(left-lbl-4)} ${f1(top)} ${f1(W)} ${f1(H)}`);document.documentElement.style.setProperty('--board-ar',`${f1(W)}/${f1(H)}`);
+  const lbl=coordsOn?22:0,Bw=right-left,gap=lbl+12,rs=Bw/8,rh=rs*1.25,band=false,RC=8;   // 3D: the board is wider than tall, the reserve stays under it
+  const X0=band?left-lbl-12-4*rs:left,Y0=band?top+Math.max(0,(bot+lbl-top-4*rh)/2):bot+gap;
+  const vx=band?X0-4:left-lbl-4,vy=top,W=band?right+lbl+4-vx:Bw+2*lbl+8,H=band?Math.max(bot+lbl+8,Y0+4*rh+6)-vy:(Y0-top)+2*rh+6;
+  svg.setAttribute('viewBox',`${f1(vx)} ${f1(vy)} ${f1(W)} ${f1(H)}`);document.documentElement.style.setProperty('--board-ar',`${f1(W)}/${f1(H)}`);
   const pts=a=>a.map(q=>f1(q[0])+','+f1(q[1])).join(' '),dn=q=>[q[0],q[1]+T*S*HF];
   const A=P(-hb,-hb),B=P(hb,-hb),C=P(hb,hb),D=P(-hb,hb);
   el('polygon',{points:pts([D,C,dn(C),dn(D)]),fill:'var(--wood-s)'},svg);el('polygon',{points:pts([C,B,dn(B),dn(C)]),fill:'var(--wood-f)'},svg);
@@ -403,8 +409,8 @@ function drawIso(svg,sc){const S=60,hb=2.18,T=.16,P=(x,y,z)=>prj(S,x,y,z);
   const order=[...Array(16).keys()].sort((a,b)=>(cx(a)+cy(a))-(cx(b)+cy(b))||cx(a)-cx(b));
   for(const i of order){const c=sc.cells[i];if(!c)continue;const q=P(cx(i),cy(i));pieceIso(svg,c.p,q[0],q[1],S,c.op);}
   // reserve
-  const rS=S*.82;el('rect',{x:f1(left),y:f1(Y0-4),width:f1(Bw),height:f1(2*rh+8),rx:8,fill:'var(--res)'},svg);
-  for(let p=0;p<16;p++){const x=left+(p%8)*rs,y=Y0+((p/8)|0)*rh,k='r'+p,g=el('g',sc.click.has(k)?{class:'cell','data-k':k}:{},svg);
+  const rS=S*.82;el('rect',{x:f1(X0),y:f1(Y0-4),width:f1(RC*rs),height:f1((16/RC)*rh+8),rx:8,fill:'var(--res)'},svg);
+  for(let p=0;p<16;p++){const x=X0+(p%RC)*rs,y=Y0+((p/RC)|0)*rh,k='r'+p,g=el('g',sc.click.has(k)?{class:'cell','data-k':k}:{},svg);
     el('rect',{x:f1(x),y:f1(y),width:f1(rs),height:f1(rh),fill:sc.resHov===p?'var(--hov)':'transparent',rx:6},g);
     // the piece to place, the piece chosen: the board's ring around its base (dashed while provisional), under the piece
     const c=sc.res[p],fk=sc.resFr[p],bx=x+rs/2,by=y+rh-PR*rS*SQ*1.25-3;

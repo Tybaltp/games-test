@@ -678,7 +678,8 @@ function drawBoard(st,opt){const svg=$('svg');svg.textContent='';const o=opt.o,p
       nodeEdges(ov,ns);pathLine(ov,last.p,lastMv.s,lastMv.path,{trim:endGap(lastMv)});nodeDots(ov,ns);endRings(ov,lastMv,last.p);}}
   if(o&&opt.interactive){
     if(o.setup)for(const i of o.homes)el('circle',{cx:X(i),cy:Y(i),r:HR,fill:'color-mix(in srgb,var(--accent) 30%,transparent)',stroke:'var(--accent)','stroke-width':2},ov);
-    if(ui.sel<0&&!ui.pending)for(const i of o.playable)ring(ov,X(i),Y(i),PR+3.5,{'stroke-width':1.8,opacity:.8});
+    // the pieces that can move: no longer all ringed; only the one under the mouse
+    if(ui.sel<0&&!ui.pending&&typeof ui.hover==='number'&&o.playable.has(ui.hover))ring(ov,X(ui.hover),Y(ui.hover),PR+3.5,{'stroke-width':1.8,opacity:.8});
     if(ui.sel>=0){seqRings(ov);
       for(const x of o.drops)el('circle',{cx:X(x),cy:Y(x),r:HR,fill:'color-mix(in srgb,var(--accent) 30%,transparent)',stroke:'var(--accent)','stroke-width':2,class:'gpulse'},ov);}}
   // a move waiting for confirmation: its active piece stays ringed, a click on it takes the move back one step
