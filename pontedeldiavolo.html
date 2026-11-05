@@ -46,6 +46,9 @@ h1 em{font-style:italic;font-weight:500;color:var(--accent)}
 .dot.pl,.dot.pd,.dot.pq{width:14px;height:14px;border-radius:3px}
 .dot.pl{background:var(--stone);border:1.5px solid var(--stone-edge)}
 .dot.pd{background:var(--trach);border:1.5px solid var(--trach-edge)}
+/* dark theme: the dark tiles' marker would vanish on the dark panel: a light rim */
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .dot.pd{border-color:var(--muted);box-shadow:0 0 0 1px color-mix(in srgb,var(--muted) 45%,transparent)}}
+:root[data-theme="dark"] .dot.pd{border-color:var(--muted);box-shadow:0 0 0 1px color-mix(in srgb,var(--muted) 45%,transparent)}
 .dot.pq{background:none;border:1.5px dashed var(--muted)}
 .player .clock{font-family:var(--f-display);font-weight:700}
 .player .tally{display:flex;gap:8px;font-size:12px;font-variant-numeric:tabular-nums;white-space:nowrap;overflow:hidden}
