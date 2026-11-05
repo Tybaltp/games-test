@@ -453,7 +453,8 @@ function placeBand(){const ob=$('oppBlock'),mb=$('myBlock'),ow=$('oppWrap'),mw=$
   if(n.parentNode!==nv.parentNode||n.previousElementSibling!==nv)nv.after(n);
   for(const W_ of [ow,mw])W_.style.minHeight='';
   const H=row.clientHeight-16;if(H<=0)return;let cell=Math.min(16,Math.floor((row.clientWidth*.19-16)/18*2)/2);   // my reserve: a fifth of the width at most
-  for(;cell>5;cell-=.5){mb.style.setProperty('--cell',cell+'px');if($('myTray').scrollHeight<=H)break;}
+  cell=Math.max(5,cell);for(;cell>5;cell-=.5){mb.style.setProperty('--cell',cell+'px');if($('myTray').scrollHeight<=H)break;}
+  mb.style.setProperty('--cell',cell+'px');
   ob.style.setProperty('--cell',Math.max(5,Math.round(cell*.7*2)/2)+'px');}
 function holdHeights(w){const pairs=[['oppWrap','oppBlock','oppTray'],['myWrap','myBlock','myTray']].map(([a,b,c])=>[$(a),$(b),$(c)]);
   if(pairs.some(([W_,B,T])=>!W_||!T.clientWidth))return;
