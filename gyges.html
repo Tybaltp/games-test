@@ -6,7 +6,7 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/peerjs/1.5.4/peerjs.min.js"></script>
 <script>if(typeof Peer==='undefined')document.write('<script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"><\/script>');</script>
-<link rel="stylesheet" href="common/games.css?v=31">
+<link rel="stylesheet" href="common/games.css?v=34">
 <style>
 /* Gyges palette (light, dark) and board; the shared layout is in common/games.css */
 :root{
@@ -163,7 +163,7 @@ html.nocoords{--board-ar:388/552}
 <div class="sheetbg" id="sheetBg" hidden></div>
 </section>
 </div>
-<script src="common/core.js?v=47"></script>
+<script src="common/core.js?v=51"></script>
 <script src="common/codes.js?v=2"></script>
 <script>
 function GygesEngine(){
@@ -632,7 +632,7 @@ function drawBoard(st,opt){const svg=$('svg');svg.textContent='';const o=opt.o,p
   // the board: 36 holes linked to their neighbours; once the placement is over, a goal beyond each home row,
   // linked to every square of the row in front of it
   const setup=E.setup(st),top=bandY(flip?0:1),bot=bandY(flip?1:0);
-  // band layout (games-test, wide screens): the goals stay in their bands from the start; the reserves go on two columns
+  // band layout (wide screens): the goals stay in their bands from the start; the reserves go on two columns
   // beside the board, mine low on the left, the opponent's high on the right
   const band=typeof BAND!=='undefined'&&!!BAND&&isWide(),le=coordsOn?-34:-14,RX=[le-14-CS*1.5,le-14-CS/2],RXo=[371+14+CS/2,371+14+CS*1.5];
   el('rect',{x:-11,y:top-38,width:382,height:bot-top+76,rx:16,fill:'var(--wood)',stroke:'var(--wood-edge)','stroke-width':2},svg);
@@ -732,7 +732,8 @@ function nodeEdges(par,spots){const th=PR*.26,gap=PR*.055,hole=PR-3*th-2*gap;
 function nodeDots(par,spots){for(const n of spots)el('circle',{cx:X(n.i),cy:Y(n.i),r:n.r,fill:'var(--accent)'},par);}
 
 // ---------- the interface with common/core.js ----------
-const GAME={id:'gyges',size:36,codeTag:'GYGES1',i18n:GY_I18N,
+const GAME={id:'gyges',size:36,chatBoard:.8,   // phones in portrait, network game: the board gives 20 % of its height to the chat
+  codeTag:'GYGES1',i18n:GY_I18N,
   rules:g=>({adv:!!(g&&g.adv),setup:smOf(g)}),
   form:p=>({adv:$(p+'Adv').checked,setup:smOf({setup:$(p+'Setup').value})}),
   replay:gyReplay,

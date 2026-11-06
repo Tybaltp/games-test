@@ -6,7 +6,7 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/peerjs/1.5.4/peerjs.min.js"></script>
 <script>if(typeof Peer==='undefined')document.write('<script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"><\/script>');</script>
-<link rel="stylesheet" href="common/games.css?v=31">
+<link rel="stylesheet" href="common/games.css?v=34">
 <style>
 /* Quarto palette (light, dark) and board; the shared layout is in common/games.css */
 .qhand{display:flex;align-items:center;gap:6px;margin-top:4px;font-size:.78rem;color:var(--muted)}
@@ -169,7 +169,7 @@
 <div class="sheetbg" id="sheetBg" hidden></div>
 </section>
 </div>
-<script src="common/core.js?v=47"></script>
+<script src="common/core.js?v=51"></script>
 <script src="common/codes.js?v=2"></script>
 <script>
 // ===== Quarto: rules =====
@@ -355,7 +355,7 @@ function drawBoard(sc){const svg=$('svg');svg.textContent='';gradDefs(svg);if(qV
 function ring2D(svg,p,X,Y,R0,kind){const R=R0*1.05,a=R*.9,st={...fr(kind),...(p&2&&!(p&1)?{stroke:'#d49a00'}:{})};
   if(p&4)el('rect',{x:f1(X-a),y:f1(Y-a),width:f1(2*a),height:f1(2*a),rx:f1(R*.08),...st},svg);else el('circle',{cx:f1(X),cy:f1(Y),r:f1(R),...st},svg);}
 // 2D: board of 4×4 square cells with lines between them, the reserve (16 slots, each piece keeps its own) below
-// Band layout (games-test, wide screens), view from above: the reserve in a column left of the board (2×8); in 3D the
+// Band layout (wide screens), view from above: the reserve in a column left of the board (2×8); in 3D the
 // board is wider than tall and the reserve stays under it
 const qBandOn=()=>typeof BAND!=='undefined'&&!!BAND&&isWide();
 window.addEventListener('resize',()=>{if(qBandOn()!==!!qBandOn.was&&view&&!$('game').hidden)renderGame();});

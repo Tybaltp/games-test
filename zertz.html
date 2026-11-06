@@ -6,7 +6,7 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/peerjs/1.5.4/peerjs.min.js"></script>
 <script>if(typeof Peer==='undefined')document.write('<script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"><\/script>');</script>
-<link rel="stylesheet" href="common/games.css?v=31">
+<link rel="stylesheet" href="common/games.css?v=34">
 <style>
 /* Zèrtz palette (light, dark), board and marbles; the shared layout is in common/games.css */
 :root{
@@ -37,7 +37,7 @@ html.ingame:not(.wide) .board{border-radius:14px}
 .tally{display:flex;gap:10px;font-family:var(--f-mono);font-size:.78rem;font-variant-numeric:tabular-nums;color:var(--ink);white-space:nowrap;overflow:hidden}
 .tally div{display:flex;align-items:center;gap:3px}
 .tally .goal{color:var(--muted)}
-/* band layout (games-test): in the cards above the board, each count under its marble */
+/* band layout (wide screens): in the cards above the board, each count under its marble */
 html.ingame.band #playersTop .tally{gap:14px}
 html.ingame.band #playersTop .tally div{display:grid;grid-template-columns:auto auto;justify-items:center;align-items:baseline;row-gap:3px;column-gap:0}
 html.ingame.band #playersTop .tally .mb{grid-column:1 / -1;justify-self:center}
@@ -185,7 +185,7 @@ html.ingame.band #playersTop .tally .mb{grid-column:1 / -1;justify-self:center}
 <div class="sheetbg" id="sheetBg" hidden></div>
 </section>
 </div>
-<script src="common/core.js?v=47"></script>
+<script src="common/core.js?v=51"></script>
 <script src="common/codes.js?v=2"></script>
 <script>
 function ZertzEngine(size){
@@ -415,7 +415,7 @@ function poolBar(st,r,mine,caps){const pool=[st[POOL],st[POOL+1],st[POOL+2]],n=p
     b.innerHTML=`<span class="mb c${it.k}"></span>${it.v}`;
     b.setAttribute('aria-pressed',String(it.on));b.setAttribute('aria-label',CN(it.k)+', '+it.v);b.title=CN(it.k);
     b.disabled=!it.ok;b.onclick=it.pick;cb.appendChild(b);}}
-// Band layout (games-test, wide screens): the pool inside the board's frame, a column on the left of the rings: three
+// Band layout (wide screens): the pool inside the board's frame, a column on the left of the rings: three
 // framed buttons, each a marble and its count under it; the colour picked has the accent frame
 const zBandOn=()=>typeof BAND!=='undefined'&&!!BAND&&isWide();
 function poolSvg(items,fromCap){const svg=$('svg'),vb=svg.getAttribute('viewBox').split(' ').map(Number),PW=120,x0=vb[0]-PW,h=vb[3];
