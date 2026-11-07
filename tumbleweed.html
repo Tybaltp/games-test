@@ -188,7 +188,7 @@ ol.log .twm .tag{color:var(--muted);font-size:.72rem}
 <script>
 // ===== Tumbleweed (Mike Zapawa, 2020): rules =====
 // Rules kept (see 02 - Règles retenues par jeu): a hexhex board of side 6, 8 (default) or 11, a neutral stack of height 2 in
-// the centre. Opening (move of player 1): a Red and a White stack of height 1 on two empty cells, anywhere (code « d4/f6 »,
+// the centre. Opening (move of player 1): a Red and a White stack of height 1 on two empty cells, anywhere (code « D4/F6 »,
 // Red then White). Choice (move of player 2): Red (« R ») or White (« W »); Red then moves first. A move: a stack of one's
 // colour on a cell, its height = the number of one's stacks seen from that cell (six directions, the first stack met
 // blocks the view), at least one; an empty cell always, an occupied one (opponent's, neutral or one's own) only if the new
@@ -197,14 +197,15 @@ ol.log .twm .tag{color:var(--muted);font-size:.72rem}
 function TumbleweedEngine(){
  const DIRS=[[1,0],[1,-1],[0,-1],[-1,0],[-1,1],[0,1]];   // axial (q,r); d and d+3 are opposite
  const geoCache={};
- // The board of side n: cells in axial coordinates (q,r), |q|,|r|,|q+r| < n. A cell's name: column a, b, c… (q
- // increasing), row 1, 2, 3… (bottom to top, r decreasing).
+ // The board of side n: cells in axial coordinates (q,r), |q|,|r|,|q+r| < n. A cell's name, as in the other
+ // implementations: column A, B, C… (the lines running down to the left, q+r increasing: A starts at the top left
+ // corner), row 1, 2, 3… (the horizontal rows, top to bottom).
  function geo(n){
   if(geoCache[n])return geoCache[n];
   const cells=[],idx={};
   for(let r=-(n-1);r<=n-1;r++)for(let q=-(n-1);q<=n-1;q++){
    if(Math.abs(q+r)>n-1)continue;
-   idx[q+','+r]=cells.length;cells.push({q,r,name:String.fromCharCode(97+q+n-1)+(n-r)});
+   idx[q+','+r]=cells.length;cells.push({q,r,name:String.fromCharCode(65+q+r+n-1)+(r+n)});
   }
   const byName={};cells.forEach((c,i)=>byName[c.name]=i);
   // rays[i][d]: the cells met from i in direction d, nearest first
@@ -236,13 +237,13 @@ function TumbleweedEngine(){
   const g=geo(st.size);code=code.trim();
   if(st.phase==='setup'){
    const m=/^([a-z]\d+)\/([a-z]\d+)$/i.exec(code);if(!m)return null;
-   const a=g.byName[m[1].toLowerCase()],b=g.byName[m[2].toLowerCase()];
+   const a=g.byName[m[1].toUpperCase()],b=g.byName[m[2].toUpperCase()];
    if(a===undefined||b===undefined||a===b||st.h[a]||st.h[b])return null;
    return g.cells[a].name+'/'+g.cells[b].name;
   }
   if(st.phase==='color'){const c=code.toUpperCase();return c==='R'||c==='W'?c:null;}
   if(code.toLowerCase()==='pass')return 'pass';
-  const i=g.byName[code.toLowerCase()];
+  const i=g.byName[code.toUpperCase()];
   if(i===undefined||!placeH(st,i,colorToMove(st)))return null;
   return g.cells[i].name;
  }
@@ -466,10 +467,15 @@ function stack(g,x,y,c,k,op){const p=el('g',{transform:`translate(${x.toFixed(2)
   el('circle',{r:SR,fill:FILL[c],stroke:EDGE[c],'stroke-width':1.5},p);
   const tx=el('text',{y:.5,'text-anchor':'middle','dominant-baseline':'central','font-family':'var(--f-mono)','font-weight':600,'font-size':S*.78,fill:INK[c]},p);tx.textContent=k;return p;}
 const ring=(g,x,y,dash,w)=>el('circle',{cx:x.toFixed(2),cy:y.toFixed(2),r:S*.8,fill:'none',stroke:'var(--mk)','stroke-width':w||2,...(dash?{'stroke-dasharray':'4 3'}:{}),'pointer-events':'none'},g);
+// the coordinates: each row's number on its left; each column's letter beyond its top cell, turned along the column
+function labels(n){const L=[];
+  for(let r=-(n-1);r<=n-1;r++){const q=Math.max(-(n-1),-(n-1)-r),[x,y]=XY({q,r});L.push({x:x-S*1.35,y,s:String(r+n),rot:0});}
+  for(let s=-(n-1);s<=n-1;s++){const r=Math.max(-(n-1),s-(n-1)),[x,y]=XY({q:s-r,r});L.push({x:x+S*.62,y:y-S*1.08,s:String.fromCharCode(65+s+n-1),rot:30});}
+  return L;}
 function geom(n){const g=TW.geo(n),pts=g.cells.map(XY);
-  let x0=1e9,x1=-1e9,y0=1e9,y1=-1e9;for(const [x,y] of pts){x0=Math.min(x0,x);x1=Math.max(x1,x);y0=Math.min(y0,y);y1=Math.max(y1,y);}
-  const m=coordsOn?S*1.9:S*1.15,mb=coordsOn?S*2.1:S*1.15;
-  return {g,pts,vb:[x0-m,y0-S*1.15,x1-x0+m+S*1.15,y1-y0+S*1.15+mb]};}
+  let x0=1e9,x1=-1e9,y0=1e9,y1=-1e9;const add=(x,y,m)=>{x0=Math.min(x0,x-m);x1=Math.max(x1,x+m);y0=Math.min(y0,y-m);y1=Math.max(y1,y+m);};
+  for(const [x,y] of pts)add(x,y,S*1.15);if(coordsOn)for(const l of labels(n))add(l.x,l.y,S*.55);
+  return {g,pts,vb:[x0,y0,x1-x0,y1-y0]};}
 function drawBoard(){const svg=$('svg');svg.textContent='';svg.setAttribute('aria-label',t('boardLbl'));
   const sh=shown,st=sh&&view?sh.d.st:TW.init(TW.rules(view||{size:homeSize()})),G=geom(st.size),{g,pts}=G,N=g.cells.length;
   const vb=G.vb.map(v=>+v.toFixed(2));svg.setAttribute('viewBox',vb.join(' '));document.documentElement.style.setProperty('--board-ar',`${vb[2]}/${vb[3]}`);
@@ -478,10 +484,8 @@ function drawBoard(){const svg=$('svg');svg.textContent='';svg.setAttribute('ari
     el('polygon',{points:HEXPTS,fill:'var(--hex)',stroke:'var(--hex-edge)','stroke-width':1.2},e);
     // a pointer only where a click acts
     if(mine&&(ms.phase==='setup'?!ms.h[i]||ui.tent.includes(i):ms.phase==='play'&&(TW.placeH(ms,i,c)||ui.cell===i))||alt.has(i))e.setAttribute('class','pt');}
-  // coordinates (core: coordsOn): each row's number on its left, each column's letter below its lowest cell
-  if(coordsOn){const n=st.size,lab=(x,y,s)=>{const e=el('text',{x:x.toFixed(2),y:y.toFixed(2),'text-anchor':'middle','dominant-baseline':'central','font-family':'var(--f-mono)','font-size':S*.5,fill:'var(--lab)','pointer-events':'none'},svg);e.textContent=s;};
-    for(let r=-(n-1);r<=n-1;r++){const q=Math.max(-(n-1),-(n-1)-r),[x,y]=XY({q,r});lab(x-S*1.35,y,String(n-r));}
-    for(let q=-(n-1);q<=n-1;q++){const r=Math.min(n-1,(n-1)-q),[x,y]=XY({q,r});lab(x+S*.55,y+S*1.25,String.fromCharCode(97+q+n-1));}}
+  // coordinates (core: coordsOn): each row's number on its left, each column's letter beyond its top cell
+  if(coordsOn)for(const l of labels(st.size)){const x=l.x.toFixed(2),y=l.y.toFixed(2),e=el('text',{x,y,'text-anchor':'middle','dominant-baseline':'central','font-family':'var(--f-mono)','font-size':S*.5,fill:'var(--lab)','pointer-events':'none',...(l.rot?{transform:`rotate(${l.rot} ${x} ${y})`}:{})},svg);e.textContent=l.s;}
   const pcs=el('g',{'pointer-events':'none'},svg);
   // the cells held (option): a dot of the colour that holds the empty cell, in the position shown
   if(zonesOn&&st.phase==='play'){const ctl=TW.score(st).ctl;for(let i=0;i<N;i++)if(!st.h[i]&&ctl[i]>=0){const [x,y]=pts[i];el('circle',{cx:x.toFixed(2),cy:y.toFixed(2),r:S*.2,fill:FILL[ctl[i]],stroke:EDGE[ctl[i]],'stroke-width':1,opacity:.8},pcs);}}
