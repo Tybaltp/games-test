@@ -2,7 +2,7 @@
 
 Jeux de plateau à deux, joués de navigateur à navigateur : https://tybaltp.github.io/games/
 
-Dix jeux : Arimaa, Diagonal Blocks Duo, Gygès, Pente, Ponte del Diavolo, Quarto, Tintas, Tumbleweed, Volo, Zèrtz. Chaque jeu tient dans une seule page HTML, posée sur un socle commun. Le site est statique, sans compilation ni dépendance à installer : on modifie les fichiers, on les pousse, GitHub Pages publie.
+Treize jeux : Arimaa, Ayu, Diagonal Blocks Duo, Gygès, Pente, Ponte del Diavolo, Quarto, Siam, Slither, Tintas, Tumbleweed, Volo, Zèrtz. Chaque jeu tient dans une seule page HTML, posée sur un socle commun. Le site est statique, sans compilation ni dépendance à installer : on modifie les fichiers, on les pousse, GitHub Pages publie.
 
 ## Branches
 
@@ -18,7 +18,7 @@ img/cartes/           images des cartes de l'accueil (un morceau de plateau par 
 common/core.js        tout ce qui n'est pas propre à un jeu (ci-dessous)
 common/games.css      styles communs : accueil, écran de jeu fixe, barre d'actions, tiroir « ⋯ », cartes des joueurs
 common/ai.js          recherche de l'ordinateur indépendante du jeu (AISearch : glouton, alpha-bêta en faisceau, MCTS),
-                      interface documentée en tête ; chargé par Ponte del Diavolo, Tintas, Diagonal Blocks Duo, Volo et Tumbleweed
+                      interface documentée en tête ; chargé par Ponte del Diavolo, Tintas, Diagonal Blocks Duo, Volo, Tumbleweed, Slither, Ayu et Siam
 CHARTE-ERGONOMIE.md   principes d'ergonomie validés, que tout jeu applique
 volo-net.onnx         poids du réseau de neurones de Volo (niveaux « Réseau », bloc /*NN*/ de volo.html), produits par
                       ~/volo-ia ; le worker charge onnxruntime-web depuis jsDelivr (repli unpkg, puis MCTS 3 s hors ligne)
@@ -41,7 +41,7 @@ La page charge `common/core.js`, définit `const GAME={…}`, puis appelle `core
 
 ## Règles à respecter
 
-- **Version des fichiers communs.** Les pages chargent `common/core.js?v=N`, `common/games.css?v=N` et, pour cinq d'entre elles, `common/ai.js?v=M`. Après toute modification d'un fichier commun, augmenter son numéro dans **toutes les pages qui le chargent** ; sinon un navigateur peut garder l'ancien fichier en cache à côté d'une page récente.
+- **Version des fichiers communs.** Les pages chargent `common/core.js?v=N`, `common/games.css?v=N` et, pour huit d'entre elles, `common/ai.js?v=M`. Après toute modification d'un fichier commun, augmenter son numéro dans **toutes les pages qui le chargent** ; sinon un navigateur peut garder l'ancien fichier en cache à côté d'une page récente.
 - **`GAME.id` ne change jamais.** Il préfixe les clés de stockage, les identifiants réseau et les codes de reprise (`gyges-test`, `gyges-p2p-…`) : le changer ferait perdre les parties enregistrées. Deux identifiants diffèrent du nom de fichier : `diagonalblocks.html` → `dblk`, `pontedeldiavolo.html` → `pdd`.
 - **Ergonomie.** Appliquer `CHARTE-ERGONOMIE.md` : survol en transparence, provisoire en pointillés, joué en plein, une seule mise en évidence, une seule barre d'actions, écran sans défilement.
 
