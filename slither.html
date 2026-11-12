@@ -46,7 +46,7 @@ ol.log .slm .tag{color:var(--muted);font-size:.72rem}
 
 <section class="view" id="setup">
   <div class="home">
-    <p class="lede noinv" data-i18n="lede"></p>
+    <p class="lede noinv"><span data-i18n="lede"></span> <span data-i18n="by"></span></p>
     <div class="card primary-card" id="newCard">
       <div class="newHead" id="newHead" hidden><h2 id="newTitle" data-i18n="pickOpp">Against whom?</h2><button type="button" class="back" id="newBack" data-i18n="back">Back</button></div>
       <div class="homeMain" id="homeMain">
@@ -258,7 +258,7 @@ const SL=SlitherEngine();
 
 // ===== Slither: the page's side of common/core.js =====
 const SL_I18N={fr:{
- title:"Slither",lede:"Posez, glissez d'un pas, reliez vos deux bords.",
+ title:"Slither",lede:"Serpentez jusqu'à relier vos bords.",by:"Un jeu de Corey Clark.",
  sizeOpt:"Plateau",size_fmt:"{n} × {n}",swapOpt:"Règle d'échange",
  firstIs:"Qui commence (Noir)",needConfirm:"Confirmer chaque coup",
  cB:"noir",cW:"blanc",eB:"haut–bas",eW:"gauche–droite",eBs:"↕ haut–bas",eWs:"↔ gauche–droite",
@@ -288,7 +288,7 @@ const SL_I18N={fr:{
  <li><b>Pendule</b> : au choix à la création, par un lien ou face à face. Par un lien, elle démarre quand les deux joueurs ont cliqué Démarrer la partie, et s'arrête pendant une déconnexion ; face à face, elle démarre aussitôt.</li></ul>
  <p class="hint" style="margin-top:.6em">Slither — Corey Clark (2010). Règles : <a href="https://docs.littlegolem.net/games/slither">Little Golem</a>.</p>`
 },en:{
- title:"Slither",lede:"Place, slide one step, join your two edges.",
+ title:"Slither",lede:"Slither your way to connection.",by:"A game by Corey Clark.",
  sizeOpt:"Board",size_fmt:"{n} × {n}",swapOpt:"Swap rule",
  firstIs:"Who starts (Black)",needConfirm:"Confirm each move",
  cB:"black",cW:"white",eB:"top–bottom",eW:"left–right",eBs:"↕ top–bottom",eWs:"↔ left–right",
@@ -318,7 +318,7 @@ const SL_I18N={fr:{
  <li><b>Clock</b>: chosen when the game is created, with a link or face to face. With a link, it starts when both players have clicked Start the game, and stops while a player is disconnected; face to face, it starts at once.</li></ul>
  <p class="hint" style="margin-top:.6em">Slither — Corey Clark (2010). Rules: <a href="https://docs.littlegolem.net/games/slither">Little Golem</a>.</p>`
 },es:{
- title:"Slither",lede:"Coloca, desliza un paso, une tus dos bordes.",
+ title:"Slither",lede:"Serpentea hasta unir tus bordes.",by:"Un juego de Corey Clark.",
  sizeOpt:"Tablero",size_fmt:"{n} × {n}",swapOpt:"Regla de intercambio",
  firstIs:"Quién empieza (Negras)",needConfirm:"Confirmar cada jugada",
  cB:"negras",cW:"blancas",eB:"arriba–abajo",eW:"izquierda–derecha",eBs:"↕ arriba–abajo",eWs:"↔ izquierda–derecha",
