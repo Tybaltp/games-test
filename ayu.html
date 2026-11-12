@@ -170,7 +170,7 @@ ol.log .aym .tag{color:var(--muted);font-size:.72rem}
 <div class="sheetbg" id="sheetBg" hidden></div>
 </section>
 </div>
-<script src="common/core.js?v=61"></script>
+<script src="common/core.js?v=62"></script>
 <script src="common/codes.js?v=4"></script>
 <script src="common/ai.js?v=1"></script>
 <script>
@@ -460,10 +460,18 @@ function evalInfo(r){if(r.move==='swap')return {k:'ai_swapped'};const s=r.score;
   return {k:Math.abs(s)<2?'ai_eq':s>0?(s>8?'ai_much':'ai_better'):(s<-8?'ai_muchWorse':'ai_worse'),d:r.depth};}
 
 // ---------- the interface with common/core.js ----------
+// the positions already replayed are kept (core: replayKept); the engine plays on its position: each move on a copy
+const ayKey=st=>st.turn+':'+st.col[st.turn]+':'+st.b.join('');   // the engine's key of a position (repetitions)
 const GAME={id:'ayu',size:'square',codeTag:'AYU1',i18n:AY_I18N,
   rules:g=>AY.rules(g),
   form:p=>{const r=AY.rules({size:$(p+'Size').value,swap:$(p+'Swap').checked});LS.set('ayu-size',r.size);LS.set('ayu-swap',r.swap);return r;},
-  replay:(r,m)=>AY.replay(r,m),
+  replay:(r,m)=>!m.length?AY.replay(r,m):replayKept(r,m,{init:g=>{const st=AY.init(AY.rules(g));st.seen[ayKey(st)]=1;return st;},
+    play(prev,mv){const st=deepCopy(prev),code=AY.legal(st,mv);if(code===null)return null;   // as AY.replay, move by move
+      const s=st.turn,c=AY.toMove(st);let res;
+      if(code==='swap'){st.col=[st.col[1],st.col[0]];st.turn=0;res={kind:'swap',c};}
+      else{const [f,t]=code.split('-').map(x=>AY.parse(st.size,x));st.b=AY.after(st,f,t);st.turn=1-st.turn;res={kind:'move',c,f,t};}
+      st.ply++;const k=ayKey(st);let over=null;if(!AY.legalMoves(st).length)over={w:st.turn,why:'w_stuck'};else if(st.seen[k])over={w:-1,why:'w_rep'};else st.seen[k]=1;
+      return {st,e:{p:s,s,code,...res},last:{code,...res},over};}}),
   legal:(st,code)=>AY.legal(st,code),
   enc:mv=>String(mv),describe,newUi,preparing:prepared,cancel:cancelPrep,
   board:ayBoard,turnStatus:ayTurnStatus,waitStatus:ayWaitStatus,pendText,
