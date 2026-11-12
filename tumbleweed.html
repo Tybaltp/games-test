@@ -60,7 +60,7 @@ ol.log .twm .tag{color:var(--muted);font-size:.72rem}
 
 <section class="view" id="setup">
   <div class="home">
-    <p class="lede noinv" data-i18n="lede"></p>
+    <p class="lede noinv"><span data-i18n="lede"></span> <span data-i18n="by"></span></p>
     <div class="card primary-card" id="newCard">
       <div class="newHead" id="newHead" hidden><h2 id="newTitle" data-i18n="pickOpp">Against whom?</h2><button type="button" class="back" id="newBack" data-i18n="back">Back</button></div>
       <div class="homeMain" id="homeMain">
@@ -292,7 +292,7 @@ const TW=TumbleweedEngine();
 
 // ===== Tumbleweed: the page's side of common/core.js =====
 const TW_I18N={fr:{
- title:"Tumbleweed",lede:"Des piles qui se voient : occupez et tenez le plus de cases.",
+ title:"Tumbleweed",lede:"Empilez pour contrôler le plateau.",by:"Un jeu de Michał Zapała.",
  sizeOpt:"Plateau",size_fmt:"Côté {n} ({c} cases)",
  firstIs:"Qui pose l'ouverture",opener:"Qui pose l'ouverture ?",needConfirm:"Confirmer chaque coup",zones:"Montrer les cases tenues",
  cRed:"Rouge",cWhite:"Blanc",cRedL:"rouge",cWhiteL:"blanc",
@@ -323,7 +323,7 @@ const TW_I18N={fr:{
  <li><b>Pendule</b> : au choix à la création, par un lien ou face à face. Par un lien, elle démarre quand les deux joueurs ont cliqué Démarrer la partie, et s'arrête pendant une déconnexion ; face à face, elle démarre aussitôt.</li></ul>
  <p class="hint" style="margin-top:.6em">Tumbleweed — Mike Zapawa (2020).</p>`
 },en:{
- title:"Tumbleweed",lede:"Stacks that see each other: occupy and hold the most cells.",
+ title:"Tumbleweed",lede:"Stack up to control the board.",by:"A game by Michał Zapała.",
  sizeOpt:"Board",size_fmt:"Side {n} ({c} cells)",
  firstIs:"Who places the opening",opener:"Who places the opening?",needConfirm:"Confirm each move",zones:"Show the cells held",
  cRed:"Red",cWhite:"White",cRedL:"red",cWhiteL:"white",
@@ -354,7 +354,7 @@ const TW_I18N={fr:{
  <li><b>Clock</b>: chosen when the game is created, with a link or face to face. With a link, it starts when both players have clicked Start the game, and stops while a player is disconnected; face to face, it starts at once.</li></ul>
  <p class="hint" style="margin-top:.6em">Tumbleweed — Mike Zapawa (2020).</p>`
 },es:{
- title:"Tumbleweed",lede:"Pilas que se ven: ocupa y mantén el mayor número de casillas.",
+ title:"Tumbleweed",lede:"Apila para controlar el tablero.",by:"Un juego de Michał Zapała.",
  sizeOpt:"Tablero",size_fmt:"Lado {n} ({c} casillas)",
  firstIs:"Quién coloca la apertura",opener:"¿Quién coloca la apertura?",needConfirm:"Confirmar cada jugada",zones:"Mostrar las casillas controladas",
  cRed:"Rojo",cWhite:"Blanco",cRedL:"rojo",cWhiteL:"blanco",
