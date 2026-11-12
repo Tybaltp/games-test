@@ -50,7 +50,7 @@ ol.log .smm .tag{color:var(--muted);font-size:.72rem}
 
 <section class="view" id="setup">
   <div class="home">
-    <p class="lede noinv" data-i18n="lede"></p>
+    <p class="lede noinv"><span data-i18n="lede"></span> <span data-i18n="by"></span></p>
     <div class="card primary-card" id="newCard">
       <div class="newHead" id="newHead" hidden><h2 id="newTitle" data-i18n="pickOpp">Against whom?</h2><button type="button" class="back" id="newBack" data-i18n="back">Back</button></div>
       <div class="homeMain" id="homeMain">
@@ -270,7 +270,7 @@ const SM=SiamEngine();
 
 // ===== Siam: the page's side of common/core.js =====
 const SM_I18N={fr:{
- title:"Siam",lede:"Éléphants contre rhinocéros : poussez un rocher hors du plateau.",
+ title:"Siam",lede:"Éléphants contre rhinocéros : poussez un rocher hors du plateau.",by:"Un jeu de Didier Dhorbait.",
  firstIs:"Qui commence (Éléphants)",needConfirm:"Confirmer chaque coup",
  camp0:"Éléphants",camp1:"Rhinocéros",an0:"éléphant",an1:"rhinocéros",resv:"{n} en réserve",
  dN:"↑",dE:"→",dS:"↓",dW:"←",dNl:"Nord",dEl:"Est",dSl:"Sud",dWl:"Ouest",
@@ -293,7 +293,7 @@ const SM_I18N={fr:{
  <li><b>Pendule</b> : au choix à la création, par un lien ou face à face. Par un lien, elle démarre quand les deux joueurs ont cliqué Démarrer la partie, et s'arrête pendant une déconnexion ; face à face, elle démarre aussitôt.</li></ul>
  <p class="hint" style="margin-top:.6em">Siam — Didier Dhorbait (Ferti, 2005).</p>`
 },en:{
- title:"Siam",lede:"Elephants against rhinos: push a rock off the board.",
+ title:"Siam",lede:"Elephants against rhinos: push a rock off the board.",by:"A game by Didier Dhorbait.",
  firstIs:"Who starts (Elephants)",needConfirm:"Confirm each move",
  camp0:"Elephants",camp1:"Rhinoceroses",an0:"elephant",an1:"rhino",resv:"{n} in reserve",
  dN:"↑",dE:"→",dS:"↓",dW:"←",dNl:"North",dEl:"East",dSl:"South",dWl:"West",
@@ -316,7 +316,7 @@ const SM_I18N={fr:{
  <li><b>Clock</b>: chosen when the game is created, with a link or face to face. With a link, it starts when both players have clicked Start the game, and stops while a player is disconnected; face to face, it starts at once.</li></ul>
  <p class="hint" style="margin-top:.6em">Siam — Didier Dhorbait (Ferti, 2005).</p>`
 },es:{
- title:"Siam",lede:"Elefantes contra rinocerontes: empuja una roca fuera del tablero.",
+ title:"Siam",lede:"Elefantes contra rinocerontes: empuja una roca fuera del tablero.",by:"Un juego de Didier Dhorbait.",
  firstIs:"Quién empieza (Elefantes)",needConfirm:"Confirmar cada jugada",
  camp0:"Elefantes",camp1:"Rinocerontes",an0:"elefante",an1:"rinoceronte",resv:"{n} en reserva",
  dN:"↑",dE:"→",dS:"↓",dW:"←",dNl:"Norte",dEl:"Este",dSl:"Sur",dWl:"Oeste",
