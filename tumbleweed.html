@@ -181,7 +181,7 @@ ol.log .twm .tag{color:var(--muted);font-size:.72rem}
 <div class="sheetbg" id="sheetBg" hidden></div>
 </section>
 </div>
-<script src="common/core.js?v=61"></script>
+<script src="common/core.js?v=62"></script>
 <script src="common/codes.js?v=4"></script>
 <script src="common/ai.js?v=1"></script>
 <script>
@@ -387,7 +387,12 @@ const TW_I18N={fr:{
 }};
 const CN=c=>t(c===TW.RED?'cRed':'cWhite'),CNL=c=>t(c===TW.RED?'cRedL':'cWhiteL'),CK=c=>c===TW.RED?'r':c===TW.WHITE?'w':'u';
 const nameOf=(st,i)=>TW.geo(st.size).cells[i].name;
-const twReplay=(rules,moves)=>TW.replay(rules,moves);
+// the positions already replayed are kept (core: replayKept); the engine plays on its position: each move on a copy
+const twReplay=(rules,moves)=>replayKept(rules,moves,{init:g=>TW.init(TW.rules(g)),
+  play(prev,mv){const st=deepCopy(prev),code=TW.legal(st,mv);if(code===null)return null;   // as TW.replay, move by move
+    const p=st.turn,res=TW.apply(st,code);let over=null;
+    if(st.phase==='play'&&st.passes>=2){const sc=TW.score(st).byColor,a=sc[st.col[0]],b=sc[st.col[1]];over={w:a>b?0:b>a?1:-1,why:'w_score',score:[a,b]};}
+    return {st,e:{p,code,...res},last:{code,...res},over};}});
 // the move list: small stacks and coordinates
 function logNode(e){const s=document.createElement('span');s.className='twm';
   const mini=(c,k)=>`<span class="mini ${CK(c)}">${k}</span>`,G=TW.geo(view?TW.rules(view).size:8);
