@@ -166,7 +166,7 @@ ol.log .smm .tag{color:var(--muted);font-size:.72rem}
 <div class="sheetbg" id="sheetBg" hidden></div>
 </section>
 </div>
-<script src="common/core.js?v=61"></script>
+<script src="common/core.js?v=62"></script>
 <script src="common/codes.js?v=4"></script>
 <script src="common/ai.js?v=1"></script>
 <script>
@@ -513,9 +513,15 @@ function evalInfo(r){const s=r.score;if(r.forced)return {k:'ai_forced'};if(s>900
   return {k:Math.abs(s)<.3?'ai_eq':s>0?(s>1.5?'ai_much':'ai_better'):(s<-1.5?'ai_muchWorse':'ai_worse'),d:r.depth};}
 
 // ---------- the interface with common/core.js ----------
+// the positions already replayed are kept (core: replayKept); the engine plays on its position: each move on a copy
 const GAME={id:'siam',size:5,codeTag:'SIAM1',i18n:SM_I18N,
   rules:()=>({}),form:()=>({}),
-  replay:(r,m)=>SM.replay(r,m),
+  replay:(r,m)=>replayKept(r,m,{init:()=>SM.init(),
+    play(prev,mv){const st=deepCopy(prev),code=SM.legal(st,mv);if(code===null)return null;   // as SM.replay, move by move
+      const s=st.turn,c=SM.toMove(st),inf=SM.info(code),occ=inf.t>=0&&!!st.p[inf.t]&&inf.kind!=='turn',res=SM.plan(st,code)();
+      const e={p:s,s,code,c,...inf,push:occ,out:res.out?res.out.t:-1};
+      const over=res.out&&res.out.t===SM.ROCK?{w:st.col.indexOf(res.winner),why:'w_rock'}:null;st.turn=1-st.turn;
+      return {st,e,last:e,over};}}),
   legal:(st,code)=>SM.legal(st,code),
   enc:mv=>String(mv),describe,newUi,preparing:prepared,cancel:cancelPrep,
   board:smBoard,turnStatus:smTurnStatus,waitStatus:smWaitStatus,pendText,pendBtns,
