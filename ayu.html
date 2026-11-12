@@ -46,7 +46,7 @@ ol.log .aym .tag{color:var(--muted);font-size:.72rem}
 
 <section class="view" id="setup">
   <div class="home">
-    <p class="lede noinv" data-i18n="lede"></p>
+    <p class="lede noinv"><span data-i18n="lede"></span> <span data-i18n="by"></span></p>
     <div class="card primary-card" id="newCard">
       <div class="newHead" id="newHead" hidden><h2 id="newTitle" data-i18n="pickOpp">Against whom?</h2><button type="button" class="back" id="newBack" data-i18n="back">Back</button></div>
       <div class="homeMain" id="homeMain">
@@ -254,7 +254,7 @@ const AY=AyuEngine();
 
 // ===== Ayu: the page's side of common/core.js =====
 const AY_I18N={fr:{
- title:"Ayu",lede:"Rassemblez toutes vos pierres : le premier bloqué gagne.",
+ title:"Ayu",lede:"Des pierres éparpillées partout : rassemblez les vôtres.",by:"Un jeu de Luis Bolaños Mures.",
  sizeOpt:"Plateau",size_fmt:"{n} × {n}",swapOpt:"Règle d'échange",
  firstIs:"Qui commence (Noir)",needConfirm:"Confirmer chaque coup",
  cB:"noir",cW:"blanc",units:"{n} unités",unit1:"1 unité",unitsT:"Unités : pierres seules ou groupes. Une seule unité, le plus souvent : plus de coup, c'est gagné.",
@@ -280,7 +280,7 @@ const AY_I18N={fr:{
  <li><b>Pendule</b> : au choix à la création, par un lien ou face à face. Par un lien, elle démarre quand les deux joueurs ont cliqué Démarrer la partie, et s'arrête pendant une déconnexion ; face à face, elle démarre aussitôt.</li></ul>
  <p class="hint" style="margin-top:.6em">Ayu — Luis Bolaños Mures (2011). Règles : <a href="https://mindsports.nl/index.php/arena/ayu/724-ayu-rules">MindSports</a>.</p>`
 },en:{
- title:"Ayu",lede:"Gather all your stones: the first one stuck wins.",
+ title:"Ayu",lede:"Stones scattered everywhere: gather yours.",by:"A game by Luis Bolaños Mures.",
  sizeOpt:"Board",size_fmt:"{n} × {n}",swapOpt:"Swap rule",
  firstIs:"Who starts (Black)",needConfirm:"Confirm each move",
  cB:"black",cW:"white",units:"{n} units",unit1:"1 unit",unitsT:"Units: lone stones or groups. A single unit usually means no more moves: a win.",
@@ -306,7 +306,7 @@ const AY_I18N={fr:{
  <li><b>Clock</b>: chosen when the game is created, with a link or face to face. With a link, it starts when both players have clicked Start the game, and stops while a player is disconnected; face to face, it starts at once.</li></ul>
  <p class="hint" style="margin-top:.6em">Ayu — Luis Bolaños Mures (2011). Rules: <a href="https://mindsports.nl/index.php/arena/ayu/724-ayu-rules">MindSports</a>.</p>`
 },es:{
- title:"Ayu",lede:"Reúne todas tus piedras: el primero que se queda bloqueado gana.",
+ title:"Ayu",lede:"Piedras dispersas por todas partes: reúne las tuyas.",by:"Un juego de Luis Bolaños Mures.",
  sizeOpt:"Tablero",size_fmt:"{n} × {n}",swapOpt:"Regla de intercambio",
  firstIs:"Quién empieza (Negras)",needConfirm:"Confirmar cada jugada",
  cB:"negras",cW:"blancas",units:"{n} unidades",unit1:"1 unidad",unitsT:"Unidades: piedras sueltas o grupos. Una sola unidad, casi siempre: no hay más jugadas, has ganado.",
