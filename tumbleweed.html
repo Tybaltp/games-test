@@ -1,13 +1,13 @@
 <!doctype html>
 <html lang="fr" data-band="bas"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Tumbleweed</title>
-<script src="common/theme.js?v=4"></script>
+<script src="common/theme.js?v=5"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/peerjs/1.5.4/peerjs.min.js"></script>
 <script>if(typeof Peer==='undefined')document.write('<script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"><\/script>');</script>
-<link rel="stylesheet" href="common/games.css?v=39">
+<link rel="stylesheet" href="common/games.css?v=51">
 <style>
 /* Tumbleweed palette (light, dark), board and stacks; the shared layout is in common/games.css */
 :root{
@@ -53,6 +53,12 @@ ol.log .twm{display:inline-flex;align-items:center;gap:4px;flex-wrap:wrap;min-wi
 ol.log .twm .tag{color:var(--muted);font-size:.72rem}
 .notice button .tw{display:inline-block;width:12px;height:12px;vertical-align:-1px;margin-right:5px}
 </style>
+<style>
+/* accueil : ce qui est propre à Tumbleweed ; le reste dans common/accueil.css. Le fond : le plateau entier en cours de partie,
+   sur le fond de la page (première version rapide, à revoir) ; cadres de mode à la couleur de l'étiquette du jeu (common/cards.css). */
+:root{--accImgL:url(../img/accueil/tumbleweed.svg);--accImgD:url(../img/accueil/tumbleweed-dark.svg);--accWoodL:transparent;--accWoodD:transparent;--accR:1.14881;--accTintL:#b4532a;--accTintD:#e08a5c}
+</style>
+<link rel="stylesheet" href="common/accueil.css?v=4">
 </head><body>
 <div class="wrap">
 <header><h1><a class="crumb" id="crumbHome" href="index.html">games</a><span class="sep">/</span><a class="gname" id="crumbGame" href="tumbleweed.html"><b id="ttl" style="font-weight:inherit">Tumbleweed</b></a><span data-i18n="sub">peer to peer</span></h1><div class="seg" role="group" aria-label="Langue / Language"><div class="langdd"><button type="button" class="langBtn" aria-haspopup="menu" aria-expanded="false">FR</button><div class="menu" role="menu" hidden><button type="button" role="menuitem" data-lang="fr">Français</button><button type="button" role="menuitem" data-lang="en">English</button><button type="button" role="menuitem" data-lang="es">Español</button></div></div></div><button type="button" class="optbtn" id="optBtn" data-i18n-t="opts" aria-controls="side" aria-expanded="false">⋯</button></header>
@@ -64,29 +70,24 @@ ol.log .twm .tag{color:var(--muted);font-size:.72rem}
     <div class="card primary-card" id="newCard">
       <div class="newHead" id="newHead" hidden><h2 id="newTitle" data-i18n="pickOpp">Against whom?</h2><button type="button" class="back" id="newBack" data-i18n="back">Back</button></div>
       <div class="homeMain" id="homeMain">
+        <div class="resumeIn" id="resumeCard" hidden></div>
         <button class="primary big" type="button" id="playBtn" data-i18n="playGo">Play</button>
         <button class="big" type="button" id="anaBtn" data-i18n="analyse">Analyse</button>
-        <div class="resumeIn" id="resumeCard" hidden><p class="hint" id="resumeTxt" data-i18n="inProgressTxt">You were hosting an unfinished game.</p><button type="button" class="primary" id="resumeBtn" data-i18n="resumeBtn">Resume game</button></div>
         <details class="sub" id="joinD"><summary class="noinv" data-i18n="haveInvite">I have an invitation code</summary>
           <form class="form" id="joinForm">
-            <label for="jCode" class="noinv"><span data-i18n="code">Game code</span><input id="jCode" class="txt" maxlength="12" placeholder="k7m2qp" autocomplete="off" spellcheck="false"></label>
+            <label for="jCode" class="noinv"><span data-i18n="code">Game code</span><input id="jCode" class="txt" placeholder="tw-k7m2q" autocomplete="off" spellcheck="false" autocapitalize="off"></label>
             <label for="jName"><span data-i18n="nick">Your nickname</span><input id="jName" maxlength="24" autocomplete="nickname" class="txt"></label>
             <div class="confirm"><button class="primary" type="submit" id="jPlay" data-i18n="play">Play</button><button type="button" id="jWatch" data-i18n="watch">Watch</button></div>
+            <p class="hint err" id="joinErr"></p>
           </form>
           <p class="hint noinv" data-i18n="linkHint">With an invitation link, the page connects on its own.</p>
-        </details>
-        <details class="sub" id="resumeD"><summary data-i18n="haveResume">I have a resume code</summary>
-          <div><form class="form" id="rForm"><label for="rIn"><span data-i18n="resumeCode">Resume code</span><textarea id="rIn" class="txt" rows="3" spellcheck="false" autocomplete="off" placeholder="TUMBLEWEED1.…" style="resize:vertical;font-size:.78rem"></textarea></label>
-            <div class="confirm" id="rSeats"></div><button type="submit" id="rGo" data-i18n="load">Load</button></form>
-            <p class="hint" data-i18n="resumeHint">If a game could not be restored, paste the resume code copied during the game. You host it again and send the new code to your opponent.</p></div>
-    
         </details>
       </div>
       <label class="lvl" for="modeSel" id="modeWrap" hidden><span data-i18n="modeOpt">Game mode</span><select id="modeSel"><option value="link" data-i18n="m_link">Invite with a link</option><option value="ai" data-i18n="m_ai">Computer</option><option value="face" data-i18n="m_face">Face to face</option></select></label>
       <p class="hint" id="modeTxt" hidden></p>
       <div class="form" id="nameWrap" hidden><label for="hName"><span data-i18n="nick">Your nickname</span><input id="hName" maxlength="24" autocomplete="nickname" class="txt"></label></div>
       <div class="picks" id="anaPick" hidden>
-        <button type="button" class="pick" data-pick="free"><b data-i18n="a_free">Create a game</b><span data-i18n="a_freeTxt">Both sides on this screen, with undo and hints: to try things and analyse.</span></button>
+        <button type="button" class="pick" data-pick="free"><b data-i18n="a_free">New analysis</b><span data-i18n="a_freeTxt">Both sides on this screen: stepping back, variations, hints.</span></button>
         <button type="button" class="pick" data-pick="load"><b data-i18n="a_load">Load a game</b><span data-i18n="a_loadTxt">An SGF file: a finished game to replay, or an unfinished one to go on with.</span></button>
       </div>
       
@@ -119,7 +120,6 @@ ol.log .twm .tag{color:var(--muted);font-size:.72rem}
         <button class="primary" type="submit" data-i18n="sgfLoadBtn">Load the game</button>
       </form>
     </div>
-    <p class="hint err" id="joinErr"></p>
     
     
     
@@ -150,7 +150,6 @@ ol.log .twm .tag{color:var(--muted);font-size:.72rem}
       <p class="hint" id="fileNote" hidden data-i18n="fileNote">This file is open from your disk, so links will not work for anyone else. Send them this HTML file and the code: they open it, enter the code and choose Play or Watch.</p>
       <p class="hint" id="hostNote" data-i18n="hostNote">The game runs in your browser; if you drop out, your opponent takes over.</p>
       </div>
-      <div id="rcCard" class="rcpart coderow" hidden><span class="hint" data-i18n="cResume">Resume</span><span class="codetxt"></span><span class="cbtns"><button type="button" id="rcCopy" data-i18n="cCode" data-i18n-t="rcTxt">Code</button></span><div class="link" id="rcBox" hidden><input id="rcTxt" readonly aria-label="Resume code"></div></div>
     </details>
     <div class="card" id="startCard" hidden><h2 data-i18n="start">Start</h2><p class="hint" id="startTxt"></p><div class="confirm"><button type="button" class="primary" id="startBtn" data-i18n="startBtn">Start the game</button></div></div>
     <div class="card" id="endCard" hidden>
@@ -181,9 +180,9 @@ ol.log .twm .tag{color:var(--muted);font-size:.72rem}
 <div class="sheetbg" id="sheetBg" hidden></div>
 </section>
 </div>
-<script src="common/core.js?v=62"></script>
-<script src="common/codes.js?v=4"></script>
-<script src="common/ai.js?v=1"></script>
+<script src="common/core.js?v=83"></script>
+<script src="common/codes.js?v=6"></script>
+<script src="common/ai.js?v=2"></script>
 <script>
 // ===== Tumbleweed (Mike Zapawa, 2020): rules =====
 // Rules kept (see 02 - Règles retenues par jeu): a hexhex board of side 6, 8 (default) or 11, a neutral stack of height 2 in
@@ -319,7 +318,7 @@ const TW_I18N={fr:{
  <li><b>Décompte</b> : vos piles, plus les cases vides que voient plus de vos piles que de piles adverses. Le plus haut total gagne ; égalité, nulle. La pile neutre ne compte pour personne.</li>
  <li><b>Cartes joueurs</b> : la couleur de chacun (en pointillés avant le choix) et ses points du moment. Sur le plateau (option), un point coloré marque chaque case vide tenue.</li>
  <li><b>Jouer</b> : cliquez une case ; au survol, la pile qu'on y poserait s'affiche en transparence, avec sa hauteur. Sur écran tactile, un premier toucher la pose à titre provisoire (cadre en pointillés). L'ouverture attend toujours Confirmer ; un coup simple aussi avec « Confirmer chaque coup ». Cliquer une pile provisoire la retire. Les commandes du coup sont dans la barre sous le plateau : Passer, Rouge ou Blanc au choix de couleur, Réinitialiser, Confirmer ; selon la partie, Annuler le dernier coup et Suggestion.</li>
- <li><b>Parties</b> : <i>par un lien</i>, contre un adversaire sur un autre appareil ; contre l'<i>ordinateur</i>, avec annulation et suggestions ; <i>face à face</i>, deux joueurs sur le même écran, avec pendule au choix ; <i>libre</i>, les deux camps sur cet écran, sans pendule, avec annulation et suggestions.</li>
+ <li><b>Parties</b> : <i>par un lien</i>, contre un adversaire sur un autre appareil ; contre l'<i>ordinateur</i>, avec annulation et suggestions ; <i>face à face</i>, deux joueurs sur le même écran, avec pendule au choix ; <i>en analyse</i>, les deux camps sur cet écran, sans pendule, avec retour en arrière, variantes et suggestions.</li>
  <li><b>Pendule</b> : au choix à la création, par un lien ou face à face. Par un lien, elle démarre quand les deux joueurs ont cliqué Démarrer la partie, et s'arrête pendant une déconnexion ; face à face, elle démarre aussitôt.</li></ul>
  <p class="hint" style="margin-top:.6em">Tumbleweed — Mike Zapawa (2020).</p>`
 },en:{
@@ -350,7 +349,7 @@ const TW_I18N={fr:{
  <li><b>Score</b>: your stacks, plus the empty cells seen by more of your stacks than of your opponent's. The higher total wins; equal, a draw. The neutral stack counts for no one.</li>
  <li><b>Player cards</b>: each player's colour (dashed before the choice) and current points. On the board (option), a coloured dot marks each empty cell held.</li>
  <li><b>Playing</b>: click a cell; hovering shows the stack you would place there in transparency, with its height. On a touch screen, a first tap places it provisionally (dashed frame). The opening always waits for Confirm; a single move too with “Confirm each move”. Clicking a provisional stack removes it. The move commands are in the bar under the board: Pass, Red or White for the colour choice, Reset, Confirm; depending on the game, Undo last move and Hint.</li>
- <li><b>Games</b>: <i>with a link</i>, against an opponent on another device; against the <i>computer</i>, with undo and hints; <i>face to face</i>, two players on the same screen, with an optional clock; <i>free play</i>, both sides on this screen, no clock, with undo and hints.</li>
+ <li><b>Games</b>: <i>with a link</i>, against an opponent on another device; against the <i>computer</i>, with undo and hints; <i>face to face</i>, two players on the same screen, with an optional clock; <i>in analysis</i>, both sides on this screen, no clock, with stepping back, variations and hints.</li>
  <li><b>Clock</b>: chosen when the game is created, with a link or face to face. With a link, it starts when both players have clicked Start the game, and stops while a player is disconnected; face to face, it starts at once.</li></ul>
  <p class="hint" style="margin-top:.6em">Tumbleweed — Mike Zapawa (2020).</p>`
 },es:{
@@ -381,7 +380,7 @@ const TW_I18N={fr:{
  <li><b>Recuento</b>: tus pilas, más las casillas vacías que ven más pilas tuyas que adversarias. Gana el total más alto; en caso de empate, tablas. La pila neutra no cuenta para nadie.</li>
  <li><b>Tarjetas de los jugadores</b>: el color de cada uno (en línea discontinua antes de la elección) y sus puntos actuales. En el tablero (opción), un punto de color marca cada casilla vacía controlada.</li>
  <li><b>Jugar</b>: haz clic en una casilla; al pasar el ratón, la pila que se colocaría allí se muestra en transparencia, con su altura. En pantalla táctil, un primer toque la coloca de forma provisional (marco discontinuo). La apertura siempre espera a Confirmar; una jugada simple también con «Confirmar cada jugada». Hacer clic en una pila provisional la retira. Los mandos de la jugada están en la barra bajo el tablero: Pasar, Rojo o Blanco al elegir color, Reiniciar, Confirmar; según la partida, Deshacer la última jugada y Sugerencia.</li>
- <li><b>Partidas</b>: <i>por enlace</i>, contra un adversario en otro dispositivo; contra el <i>ordenador</i>, con deshacer y sugerencias; <i>cara a cara</i>, dos jugadores en la misma pantalla, con reloj opcional; <i>libre</i>, los dos bandos en esta pantalla, sin reloj, con deshacer y sugerencias.</li>
+ <li><b>Partidas</b>: <i>por enlace</i>, contra un adversario en otro dispositivo; contra el <i>ordenador</i>, con deshacer y sugerencias; <i>cara a cara</i>, dos jugadores en la misma pantalla, con reloj opcional; <i>en análisis</i>, los dos bandos en esta pantalla, sin reloj, con vuelta atrás, variantes y sugerencias.</li>
  <li><b>Reloj</b>: a elegir al crear la partida, por enlace o cara a cara. Por enlace, arranca cuando los dos jugadores han hecho clic en Empezar la partida, y se detiene durante una desconexión; cara a cara, arranca enseguida.</li></ul>
  <p class="hint" style="margin-top:.6em">Tumbleweed — Mike Zapawa (2020).</p>`
 }};
@@ -644,4 +643,5 @@ const GAME={id:'tumbleweed',size:'hexhex',codeTag:'TUMBLEWEED1',i18n:TW_I18N,
 for(const p of ['c','a','f','t'])if($(p+'Size'))$(p+'Size').addEventListener('change',e=>{LS.set('tumbleweed-size',+e.target.value);if(!view)GAME.home();});
 coreStart();
 </script>
+<script src="common/accueil.js?v=1"></script>
 </body></html>
