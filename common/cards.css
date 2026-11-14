@@ -40,3 +40,6 @@ a.gc:focus-visible{outline:2px solid var(--gacc);outline-offset:3px}
 .c-slither{--gbg:#d9e2d6;--gink:#1d2620;--gacc:#3f7a52;--img:url(../img/cartes/slither.svg)}
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .c-slither{--gbg:#1d2520;--gink:#e3eae4;--gacc:#6fb788;--img:url(../img/cartes/slither-dark.svg)}}
 :root[data-theme="dark"] .c-slither{--gbg:#1d2520;--gink:#e3eae4;--gacc:#6fb788;--img:url(../img/cartes/slither-dark.svg)}
+.c-tumbleweed{--gbg:#eadfc9;--gink:#2a2219;--gacc:#b4532a;--img:url(../img/cartes/tumbleweed.svg)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .c-tumbleweed{--gbg:#24201a;--gink:#ece5d8;--gacc:#e08a5c;--img:url(../img/cartes/tumbleweed-dark.svg)}}
+:root[data-theme="dark"] .c-tumbleweed{--gbg:#24201a;--gink:#ece5d8;--gacc:#e08a5c;--img:url(../img/cartes/tumbleweed-dark.svg)}
