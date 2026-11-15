@@ -18,10 +18,11 @@ img/cartes/           images des cartes de l'accueil (un morceau de plateau par 
 common/core.js        tout ce qui n'est pas propre à un jeu (ci-dessous)
 common/games.css      styles communs : accueil, écran de jeu fixe, barre d'actions, tiroir « ⋯ », cartes des joueurs
 common/ai.js          recherche de l'ordinateur indépendante du jeu (AISearch : glouton, alpha-bêta en faisceau, MCTS),
-                      interface documentée en tête ; chargé par Ponte del Diavolo, Tintas, Diagonal Blocks, Volo, Pylos, Ayu, Tumbleweed, Slither et Siam
+                      interface documentée en tête ; chargé par Ponte del Diavolo, Tintas, Diagonal Blocks, Volo, Pylos, Ayu, Slither, Siam et Tumbleweed
 CHARTE-ERGONOMIE.md   principes d'ergonomie validés, que tout jeu applique
 volo-net.onnx         poids du réseau de neurones de Volo (niveaux « Réseau », bloc /*NN*/ de volo.html), produits par
                       ~/volo-ia ; le worker charge onnxruntime-web depuis jsDelivr (repli unpkg, puis MCTS 3 s hors ligne)
+slither-net.onnx      poids du réseau de Slither (niveaux « Réseau » de slither.html), produits par ~/Jeux/ia
 ```
 
 ### Ce que fait le socle commun (`common/core.js`)

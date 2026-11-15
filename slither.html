@@ -11,28 +11,27 @@
 <style>
 /* Slither palette (light, dark), board and stones; the shared layout is in common/games.css */
 :root{
-  --bg:#d9e2d6;--panel:#ecf1ea;--ink:#1d2620;--muted:#5d6a60;--line:#c2cdbf;
-  --accent:#3f7a52;--accent-ink:#ffffff;--danger:#b3261e;
-  --sboard:#d9b77a;--sgrid:rgba(60,42,18,.7);--slab:rgba(60,42,18,.75);
-  --sb:#1c1f1e;--sbe:#000;--sw:#f7f6f1;--swe:rgba(0,0,0,.75);--mk:#c0392b;--sel:#2f6fd6;
+  --bg:#e4e1ea;--panel:#f1eff5;--ink:#211c2a;--muted:#635c70;--line:#cdc6d8;
+  --accent:#7a32c8;--accent-ink:#ffffff;--danger:#b3261e;
+  --sboard:#d9b77a;--sgrid:rgba(60,42,18,.7);--sstar:rgba(60,42,18,.85);--slab:rgba(60,42,18,.75);
+  --sb:#1c1f1e;--sbe:#000;--sw:#f7f6f1;--swe:rgba(0,0,0,.75);--mk:#8a3fd8;
   --board-ar:1/1;color-scheme:light;
 }
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
-  --bg:#141a16;--panel:#1d2520;--ink:#e3eae4;--muted:#94a398;--line:#2c3830;
-  --accent:#6fb788;--accent-ink:#0d1a12;--danger:#ef8579;
-  --sboard:#b8945a;--sgrid:rgba(40,26,10,.8);--slab:rgba(40,26,10,.85);--sw:#f3f1ea;--swe:rgba(0,0,0,.8);--mk:#e5483a;--sel:#2f6fd6;color-scheme:dark;}}
+  --bg:#17151c;--panel:#211d28;--ink:#e8e4ef;--muted:#a199ae;--line:#342d3e;
+  --accent:#a57de6;--accent-ink:#1b0f30;--danger:#ef8579;
+  --sboard:#b8945a;--sgrid:rgba(40,26,10,.8);--sstar:rgba(40,26,10,.9);--slab:rgba(40,26,10,.85);--sw:#f3f1ea;--swe:rgba(0,0,0,.8);--mk:#8a3fd8;color-scheme:dark;}}
 :root[data-theme="dark"]{
-  --bg:#141a16;--panel:#1d2520;--ink:#e3eae4;--muted:#94a398;--line:#2c3830;
-  --accent:#6fb788;--accent-ink:#0d1a12;--danger:#ef8579;
-  --sboard:#b8945a;--sgrid:rgba(40,26,10,.8);--slab:rgba(40,26,10,.85);--sw:#f3f1ea;--swe:rgba(0,0,0,.8);--mk:#e5483a;--sel:#2f6fd6;color-scheme:dark;}
+  --bg:#17151c;--panel:#211d28;--ink:#e8e4ef;--muted:#a199ae;--line:#342d3e;
+  --accent:#a57de6;--accent-ink:#1b0f30;--danger:#ef8579;
+  --sboard:#b8945a;--sgrid:rgba(40,26,10,.8);--sstar:rgba(40,26,10,.9);--slab:rgba(40,26,10,.85);--sw:#f3f1ea;--swe:rgba(0,0,0,.8);--mk:#8a3fd8;color-scheme:dark;}
 .board,html.ingame:not(.wide) .board{--bp:0px;padding:0;background:var(--sboard);border:0;border-radius:6px;overflow:hidden;box-shadow:0 1px 0 rgba(0,0,0,.08),0 14px 34px -18px rgba(40,25,10,.55)}
 .board .pt{cursor:pointer}
-/* players' cards: the seat's colour (it changes with the swap) and the edges it joins */
+/* players' cards: the seat's colour (it changes with the swap) */
 .dot.sst{width:16px;height:16px;border-radius:50%;box-sizing:border-box}
 .player .who{padding:2px 0 2px 2px}
 .sst.b{background:var(--sb);border:1px solid #000;box-shadow:0 0 0 1px rgba(255,255,255,.35)}
 .sst.w{background:var(--sw);border:1px solid rgba(0,0,0,.6)}
-.player .edges{font-size:.78rem;color:var(--muted);white-space:nowrap}
 .mini{display:inline-block;width:11px;height:11px;border-radius:50%;box-sizing:border-box;flex:none;vertical-align:-1px}
 .mini.b{background:var(--sb);border:1px solid #000}.mini.w{background:var(--sw);border:1px solid rgba(0,0,0,.55)}
 ol.log li{align-items:center}
@@ -42,7 +41,7 @@ ol.log .slm .tag{color:var(--muted);font-size:.72rem}
 <style>
 /* accueil : ce qui est propre à Slither ; le reste dans common/accueil.css. Le fond : le plateau entier en cours de partie,
    sur le fond de la page (première version rapide, à revoir) ; cadres de mode à la couleur de l'étiquette du jeu (common/cards.css). */
-:root{--accImgL:url(../img/accueil/slither.svg);--accImgD:url(../img/accueil/slither-dark.svg);--accWoodL:transparent;--accWoodD:transparent;--accR:1;--accTintL:#3f7a52;--accTintD:#6fb788}
+:root{--accImgL:url(../img/accueil/slither.svg);--accImgD:url(../img/accueil/slither-dark.svg);--accWoodL:transparent;--accWoodD:transparent;--accR:1;--accTintL:#7a32c8;--accTintD:#a57de6}
 </style>
 <link rel="stylesheet" href="common/accueil.css?v=4">
 </head><body>
@@ -169,7 +168,7 @@ ol.log .slm .tag{color:var(--muted);font-size:.72rem}
 </section>
 </div>
 <script src="common/core.js?v=85"></script>
-<script src="common/codes.js?v=7"></script>
+<script src="common/codes.js?v=8"></script>
 <script src="common/ai.js?v=2"></script>
 <script>
 // ===== Slither (Corey Clark, 2010), base rules =====
@@ -261,16 +260,16 @@ const SL_I18N={fr:{
  title:"Slither",lede:"Serpentez jusqu'à relier vos bords.",by:"Un jeu de Corey Clark.",
  sizeOpt:"Plateau",size_fmt:"{n} × {n}",swapOpt:"Règle d'échange",
  firstIs:"Qui commence (Noir)",needConfirm:"Confirmer chaque coup",
- cB:"noir",cW:"blanc",eB:"haut–bas",eW:"gauche–droite",eBs:"↕ haut–bas",eWs:"↔ gauche–droite",
+ cB:"noir",cW:"blanc",eB:"haut–bas",eW:"gauche–droite",
  swap:"Échanger",swapT:"Échanger : vous prenez la pierre posée et devenez Noir ; votre adversaire joue Blanc.",
- st_play:"À vous ({c}, {e}) : posez une pierre ; vous pouvez aussi déplacer une des vôtres d'un pas, avant ou après.",
- st_playN:"{name} ({c}, {e}) : posez une pierre ; on peut aussi déplacer une de ses pierres d'un pas, avant ou après.",
+ st_play:"Posez et déplacez une pierre.",
+ st_playN:"Posez et déplacez une pierre.",
  st_swapQ:" Ou échangez.",
- st_sel:"Choisissez où va la pierre : une case voisine libre, diagonales comprises.",st_moved:"Pierre déplacée : posez maintenant une pierre.",
+ st_sel:"Choisissez où va la pierre.",st_moved:"Posez une pierre.",
  st_bad:"Diagonale nue : ce tour est interdit. Changez la pose ou le déplacement.",
  st_none:"Aucun coup possible : vous passez.",st_noneN:"{name} n'a aucun coup possible et passe.",
  st_turnC:"Au tour de {name} ({c}).",
- pend:"Pose en {p}. Vous pouvez encore déplacer une pierre, ou confirmer.",pendM:"Pose en {p}, pierre {f} → {t}.",confirmTurn:"Confirmer le tour",confirmS:"Confirmer",
+ pend:"Pose en {p}.",pendM:"Pose en {p}, pierre {f} → {t}.",confirmTurn:"Confirmer le tour",confirmS:"Confirmer",
  d_place:"pose en {p}",d_move:"pose en {p}, {f} → {t}",d_swap:"échange",d_pass:"passe",
  l_swap:"échange",l_pass:"passe",
  w_conn:"ses deux bords sont reliés",
@@ -283,7 +282,7 @@ const SL_I18N={fr:{
  <li><b>Diagonale</b> : à la fin de votre tour, deux de vos pierres en diagonale doivent avoir une voisine orthogonale commune de votre couleur. Un tour qui laisse une diagonale nue est interdit.</li>
  <li><b>Victoire</b> : vos deux bords reliés à la fin de votre tour. Sans coup possible, on passe ; passer est interdit sinon. Pas de nulle.</li>
  <li><b>Échange</b> (option, activée par défaut) : au premier tour du second joueur, il peut prendre la pierre posée à son compte : les couleurs s'échangent et le premier joueur, devenu Blanc, joue.</li>
- <li><b>Jouer</b> : cliquez une intersection libre pour y poser la pierre (au survol, elle s'affiche en transparence ; posée, elle a un cadre en pointillés). Pour déplacer une pierre, cliquez-la, puis cliquez sa destination. Cliquer de nouveau une pierre provisoire ou sélectionnée revient en arrière. Le tour attend toujours Confirmer, puisqu'on peut encore déplacer une pierre. Les commandes sont dans la barre sous le plateau : Échanger, Réinitialiser, Confirmer le tour ; selon la partie, Annuler le dernier coup et Suggestion.</li>
+ <li><b>Jouer</b> : cliquez une intersection libre pour y poser la pierre (au survol, elle s'affiche en transparence ; posée, elle a un cadre en pointillés). Pour déplacer une pierre, cliquez-la, puis cliquez sa destination. Seuls les choix qui mènent à un tour permis sont proposés. Cliquer de nouveau une pierre provisoire ou sélectionnée revient en arrière. Le tour attend toujours Confirmer, puisqu'on peut encore déplacer une pierre. Les commandes sont dans la barre sous le plateau : Échanger, Réinitialiser, Confirmer le tour ; selon la partie, Annuler le dernier coup et Suggestion.</li>
  <li><b>Parties</b> : <i>par un lien</i>, contre un adversaire sur un autre appareil ; contre l'<i>ordinateur</i>, avec annulation et suggestions ; <i>face à face</i>, deux joueurs sur le même écran, avec pendule au choix ; <i>en analyse</i>, les deux camps sur cet écran, sans pendule, avec retour en arrière, variantes et suggestions.</li>
  <li><b>Pendule</b> : au choix à la création, par un lien ou face à face. Par un lien, elle démarre quand les deux joueurs ont cliqué Démarrer la partie, et s'arrête pendant une déconnexion ; face à face, elle démarre aussitôt.</li></ul>
  <p class="hint" style="margin-top:.6em">Slither — Corey Clark (2010). Règles : <a href="https://docs.littlegolem.net/games/slither">Little Golem</a>.</p>`
@@ -292,16 +291,16 @@ const SL_I18N={fr:{
  title:"Slither",lede:"Slither your way to connection.",by:"A game by Corey Clark.",
  sizeOpt:"Board",size_fmt:"{n} × {n}",swapOpt:"Swap rule",
  firstIs:"Who starts (Black)",needConfirm:"Confirm each move",
- cB:"black",cW:"white",eB:"top–bottom",eW:"left–right",eBs:"↕ top–bottom",eWs:"↔ left–right",
+ cB:"black",cW:"white",eB:"top–bottom",eW:"left–right",
  swap:"Swap",swapT:"Swap: you take the stone placed and become Black; your opponent plays White.",
- st_play:"Your move ({c}, {e}): place a stone; you may also move one of yours one step, before or after.",
- st_playN:"{name} ({c}, {e}): place a stone; you may also move one of your stones one step, before or after.",
+ st_play:"Place and move a stone.",
+ st_playN:"Place and move a stone.",
  st_swapQ:" Or swap.",
- st_sel:"Choose where the stone goes: a free neighbouring point, diagonals included.",st_moved:"Stone moved: now place a stone.",
+ st_sel:"Choose where the stone goes.",st_moved:"Place a stone.",
  st_bad:"Naked diagonal: this turn is not allowed. Change the placement or the step.",
  st_none:"No move possible: you pass.",st_noneN:"{name} has no possible move and passes.",
  st_turnC:"{name} to move ({c}).",
- pend:"Stone on {p}. You may still move a stone, or confirm.",pendM:"Stone on {p}, stone {f} → {t}.",confirmTurn:"Confirm turn",confirmS:"Confirm",
+ pend:"Stone on {p}.",pendM:"Stone on {p}, stone {f} → {t}.",confirmTurn:"Confirm turn",confirmS:"Confirm",
  d_place:"place on {p}",d_move:"place on {p}, {f} → {t}",d_swap:"swap",d_pass:"pass",
  l_swap:"swap",l_pass:"passes",
  w_conn:"their two edges are joined",
@@ -314,7 +313,7 @@ const SL_I18N={fr:{
  <li><b>Diagonals</b>: at the end of your turn, two of your stones on a diagonal must share an orthogonal neighbour of your colour. A turn that leaves a naked diagonal is not allowed.</li>
  <li><b>Winning</b>: your two edges joined at the end of your turn. Without a possible move, you pass; passing is not allowed otherwise. No draws.</li>
  <li><b>Swap</b> (option, on by default): on the second player's first turn, they may take the stone placed as theirs: the colours are exchanged and the first player, now White, moves.</li>
- <li><b>Playing</b>: click a free point to place the stone there (hovering shows it in transparency; once placed, it has a dashed frame). To move a stone, click it, then click where it goes. Clicking a provisional or selected stone again takes it back. The turn always waits for Confirm, since you may still move a stone. The commands are in the bar under the board: Swap, Reset, Confirm turn; depending on the game, Undo last move and Hint.</li>
+ <li><b>Playing</b>: click a free point to place the stone there (hovering shows it in transparency; once placed, it has a dashed frame). To move a stone, click it, then click where it goes. Only choices that lead to an allowed turn are offered. Clicking a provisional or selected stone again takes it back. The turn always waits for Confirm, since you may still move a stone. The commands are in the bar under the board: Swap, Reset, Confirm turn; depending on the game, Undo last move and Hint.</li>
  <li><b>Games</b>: <i>with a link</i>, against an opponent on another device; against the <i>computer</i>, with undo and hints; <i>face to face</i>, two players on the same screen, with an optional clock; <i>in analysis</i>, both sides on this screen, no clock, with stepping back, variations and hints.</li>
  <li><b>Clock</b>: chosen when the game is created, with a link or face to face. With a link, it starts when both players have clicked Start the game, and stops while a player is disconnected; face to face, it starts at once.</li></ul>
  <p class="hint" style="margin-top:.6em">Slither — Corey Clark (2010). Rules: <a href="https://docs.littlegolem.net/games/slither">Little Golem</a>.</p>`
@@ -323,16 +322,16 @@ const SL_I18N={fr:{
  title:"Slither",lede:"Serpentea hasta unir tus bordes.",by:"Un juego de Corey Clark.",
  sizeOpt:"Tablero",size_fmt:"{n} × {n}",swapOpt:"Regla de intercambio",
  firstIs:"Quién empieza (Negras)",needConfirm:"Confirmar cada jugada",
- cB:"negras",cW:"blancas",eB:"arriba–abajo",eW:"izquierda–derecha",eBs:"↕ arriba–abajo",eWs:"↔ izquierda–derecha",
+ cB:"negras",cW:"blancas",eB:"arriba–abajo",eW:"izquierda–derecha",
  swap:"Intercambiar",swapT:"Intercambiar: tomas la piedra colocada y pasas a ser Negras; tu adversario juega con Blancas.",
- st_play:"Te toca ({c}, {e}): coloca una piedra; también puedes mover una de las tuyas un paso, antes o después.",
- st_playN:"{name} ({c}, {e}): coloca una piedra; también se puede mover una de las propias un paso, antes o después.",
+ st_play:"Coloca y mueve una piedra.",
+ st_playN:"Coloca y mueve una piedra.",
  st_swapQ:" O intercambia.",
- st_sel:"Elige adónde va la piedra: una intersección vecina libre, diagonales incluidas.",st_moved:"Piedra movida: ahora coloca una piedra.",
+ st_sel:"Elige adónde va la piedra.",st_moved:"Coloca una piedra.",
  st_bad:"Diagonal desnuda: este turno está prohibido. Cambia la colocación o el movimiento.",
  st_none:"Ninguna jugada posible: pasas.",st_noneN:"{name} no tiene ninguna jugada posible y pasa.",
  st_turnC:"Turno de {name} ({c}).",
- pend:"Colocación en {p}. Aún puedes mover una piedra, o confirmar.",pendM:"Colocación en {p}, piedra {f} → {t}.",confirmTurn:"Confirmar el turno",confirmS:"Confirmar",
+ pend:"Piedra en {p}.",pendM:"Colocación en {p}, piedra {f} → {t}.",confirmTurn:"Confirmar el turno",confirmS:"Confirmar",
  d_place:"colocación en {p}",d_move:"colocación en {p}, {f} → {t}",d_swap:"intercambio",d_pass:"pasa",
  l_swap:"intercambio",l_pass:"pasa",
  w_conn:"sus dos bordes están unidos",
@@ -345,7 +344,7 @@ const SL_I18N={fr:{
  <li><b>Diagonal</b>: al final de tu turno, dos piedras tuyas en diagonal deben tener una vecina ortogonal común de tu color. Un turno que deja una diagonal desnuda está prohibido.</li>
  <li><b>Victoria</b>: tus dos bordes unidos al final de tu turno. Sin jugada posible, se pasa; si no, pasar está prohibido. No hay tablas.</li>
  <li><b>Intercambio</b> (opción, activada por defecto): en el primer turno del segundo jugador, este puede quedarse con la piedra colocada: los colores se intercambian y el primer jugador, ahora Blancas, juega.</li>
- <li><b>Jugar</b>: haz clic en una intersección libre para colocar allí la piedra (al pasar el ratón, se muestra en transparencia; colocada, lleva un marco punteado). Para mover una piedra, haz clic en ella y luego en su destino. Volver a hacer clic en una piedra provisional o seleccionada da marcha atrás. El turno siempre espera a Confirmar, ya que aún se puede mover una piedra. Los mandos están en la barra bajo el tablero: Intercambiar, Reiniciar, Confirmar el turno; según la partida, Deshacer la última jugada y Sugerencia.</li>
+ <li><b>Jugar</b>: haz clic en una intersección libre para colocar allí la piedra (al pasar el ratón, se muestra en transparencia; colocada, lleva un marco punteado). Para mover una piedra, haz clic en ella y luego en su destino. Solo se proponen las elecciones que llevan a un turno permitido. Volver a hacer clic en una piedra provisional o seleccionada da marcha atrás. El turno siempre espera a Confirmar, ya que aún se puede mover una piedra. Los mandos están en la barra bajo el tablero: Intercambiar, Reiniciar, Confirmar el turno; según la partida, Deshacer la última jugada y Sugerencia.</li>
  <li><b>Partidas</b>: <i>por un enlace</i>, contra un adversario en otro dispositivo; contra el <i>ordenador</i>, con deshacer y sugerencias; <i>cara a cara</i>, dos jugadores en la misma pantalla, con reloj opcional; <i>en análisis</i>, los dos bandos en esta pantalla, sin reloj, con vuelta atrás, variantes y sugerencias.</li>
  <li><b>Reloj</b>: a elegir al crear la partida, por un enlace o cara a cara. Por un enlace, arranca cuando los dos jugadores han hecho clic en Empezar la partida, y se detiene durante una desconexión; cara a cara, arranca enseguida.</li></ul>
  <p class="hint" style="margin-top:.6em">Slither — Corey Clark (2010). Reglas: <a href="https://docs.littlegolem.net/games/slither">Little Golem</a>.</p>`
@@ -383,8 +382,7 @@ function slWaitStatus({r}){const st=r.st;status(t('st_turnC',{name:seatName(st.t
 function pendText(mv,st){const m=SL.split(st.size,String(mv));if(!m)return [describe(mv,st),t('confirmTurn')];
   return [m.f>=0?t('pendM',{p:nm(st,m.p),f:nm(st,m.f),t:nm(st,m.t)}):t('pend',{p:nm(st,m.p)}),t('confirmTurn')];}
 function playerCard(el,p,d){const col=d.st.col[p],dot=el.querySelector&&el.querySelector('.dot');
-  if(dot){dot.className='dot sst '+CK(col);dot.title=CN(col);}
-  const x=document.createElement('div');x.className='edges';x.textContent=t(col===SL.BLACK?'eBs':'eWs');el.appendChild(x);}
+  if(dot){dot.className='dot sst '+CK(col);dot.title=CN(col);}}
 function dropHint(){if(busy==='hint')stopAI();if(hintMv)hintMv=null;}
 
 // ---------- input ----------
@@ -392,25 +390,17 @@ const adj=(n,a,b)=>{const ax=a%n,ay=(a-ax)/n,bx=b%n,by=(b-bx)/n;return Math.max(
 // A click: on the provisional stone, the destination or the selected stone, one step back; on one of my stones, selects it
 // to move; with a stone selected, a free neighbouring point is its destination; otherwise a free point takes the placement
 // (or moves it). The turn complete and legal waits for Confirm.
-function onCell(i){if(!view||navAt!==null)return;const ac=altCells().get(i);if(ac!==undefined&&!prepared()){anaAltGo(ac);return;}
+function onCell(i){if(!view||navAt!==null)return;
   const r=replay(view,view.moves,view.result);if(!isMyTurn(r))return;dropHint();
   const st=meSt(r),n=st.size,c=SL.toMove(st);if(!SL.anyMove(st))return;
-  if(i===ui.p)ui.p=-1;
-  else if(i===ui.t)ui.t=-1;
-  else if(i===ui.f&&ui.t<0)ui.f=-1;
-  else if(i===ui.f&&ui.t>=0)ui.p=i;   // the point the stone has left
-  else if(st.b[i]===c&&ui.t<0)ui.f=i;
-  else if(ui.f>=0&&ui.t<0){if(st.b[i]===-1&&adj(n,ui.f,i))ui.t=i;else if(st.b[i]===-1)ui.p=i;else return;}
-  else if(st.b[i]===-1)ui.p=i;
-  else return;
+  const s=stepTo(st,i);if(!s||!(s.back||reach(st,s.p,s.f,s.t)))return;   // only an action that can still end in a legal turn
+  ui.p=s.p;ui.f=s.f;ui.t=s.t;if(s.back&&!reach(st,ui.p,ui.f,ui.t))ui.p=-1;
   tone(880,.05,.03);sync(st);renderGame();}
 $('svg').addEventListener('click',e=>{const g=e.target.closest&&e.target.closest('[data-i]');if(g)onCell(+g.dataset.i);});
 function hoverAt(i){if(i===ui.hover)return;ui.hover=i;drawHover();}
 if(window.matchMedia&&window.matchMedia('(hover:hover)').matches){
   $('svg').addEventListener('pointermove',e=>{if(e.pointerType==='touch')return;const g=e.target.closest&&e.target.closest('[data-i]');hoverAt(g?+g.dataset.i:-1);});
   $('svg').addEventListener('pointerleave',()=>hoverAt(-1));}
-function altCells(){const out=new Map();if(typeof anaAlts!=='function'||!shown)return out;const n=shown.d.st.size;
-  for(const c of anaAlts()){const m=SL.split(n,c);if(m&&m.p>=0)out.set(m.p,c);}return out;}
 
 // ---------- drawing ----------
 // 40 units per point; a margin with the players' edges (Black above and below, White left and right) and the coordinates
@@ -419,18 +409,45 @@ function el(tg,a,p){const e=document.createElementNS(NS,tg);for(const k in a)e.s
 let G={n:9,pad:CELL};
 const PX=i=>G.pad+(i%G.n)*CELL,PY=i=>G.pad+(G.n-1-Math.floor(i/G.n))*CELL;
 function stone(g,i,c,op,x,y){const e=el('circle',{cx:x===undefined?PX(i):x,cy:y===undefined?PY(i):y,r:SR,fill:c===0?'var(--sb)':'var(--sw)',stroke:c===0?'var(--sbe)':'var(--swe)','stroke-width':1.6},g);if(op!==undefined)e.setAttribute('opacity',op);return e;}
-const dashRing=(g,i,col)=>el('circle',{cx:PX(i),cy:PY(i),r:SR*.72,fill:'none',stroke:col||'var(--mk)','stroke-width':2.2,'stroke-dasharray':'4 3'},g);
+const MKW=2.2,ring=(g,i,dot)=>el('circle',{cx:PX(i),cy:PY(i),r:SR*.7,fill:'none',stroke:'var(--mk)','stroke-width':MKW,...(dot?{'stroke-dasharray':'4 3'}:{})},g);
+function moveMark(g,f,t,dot){const x0=PX(f),y0=PY(f),x1=PX(t),y1=PY(t),L=Math.hypot(x1-x0,y1-y0)||1,k=SR*.7/L;
+  el('circle',{cx:x0,cy:y0,r:CELL*.1,fill:'var(--mk)'},g);
+  el('line',{x1:x0,y1:y0,x2:x1-(x1-x0)*k,y2:y1-(y1-y0)*k,stroke:'var(--mk)','stroke-width':MKW,'stroke-linecap':'round'},g);
+  ring(g,t,dot);}
+// what a click on i does to the turn being prepared: {p,f,t} (placement, step from f to t), back: it takes something back;
+// null: nothing
+function stepTo(st,i){const n=st.size,c=SL.toMove(st),{p,f,t}=ui;
+  if(i===p)return {p:-1,f,t,back:true};
+  if(i===t)return {p,f,t:-1,back:true};
+  if(i===f&&t<0)return {p,f:-1,t,back:true};
+  if(i===f&&t>=0)return {p:i,f,t};   // the point the stone has left
+  if(st.b[i]===c&&t<0)return {p,f:i,t};
+  if(st.b[i]!==-1)return null;
+  if(f>=0&&t<0)return adj(n,f,i)?{p,f,t:i}:null;   // a stone selected: only where it can go
+  return {p:i,f,t};}
+// the turn prepared (p, f→t, -1 when not chosen yet) can still be completed into a legal turn
+function reach(st,P,F,T){const n=st.size,N=n*n;
+  if(F<0)return P>=0?canPlace(st,P):SL.anyMove(st);
+  const ts=[];if(T>=0)ts.push(T);else for(let j=0;j<N;j++)if(st.b[j]===-1&&adj(n,F,j))ts.push(j);
+  for(const t of ts){if(P>=0){if(SL.after(st,P,F,t))return true;}else for(let q=0;q<N;q++)if(SL.after(st,q,F,t))return true;}
+  return false;}
+// a click on i is offered (pointer, preview): it takes something back, or the turn can still be completed after it
+const PL={st:null,k:'',m:null};
+function playable(st,i){const k=ui.p+','+ui.f+','+ui.t;if(PL.st!==st||PL.k!==k){PL.st=st;PL.k=k;PL.m=new Map();}
+  if(PL.m.has(i))return PL.m.get(i);const s=stepTo(st,i),v=!!s&&(s.back||reach(st,s.p,s.f,s.t));PL.m.set(i,v);return v;}
 function drawBoard(){const svg=$('svg');svg.textContent='';svg.setAttribute('aria-label',t('boardLbl'));
   const sh=shown,st=sh&&view?sh.d.st:SL.init(SL.rules(view||{size:homeSize()})),n=st.size;
   G={n,pad:coordsOn?CELL*1.35:CELL*.95};const W=2*G.pad+(n-1)*CELL;
   svg.setAttribute('viewBox',`0 0 ${W} ${W}`);document.documentElement.style.setProperty('--board-ar','1/1');
   el('rect',{x:0,y:0,width:W,height:W,fill:'var(--sboard)'},svg);
   // the players' edges: Black's above and below, White's left and right
-  const a=G.pad,b=G.pad+(n-1)*CELL,e1=G.pad-CELL*.62,e2=b+CELL*.62,ew=CELL*.16;
+  const a=G.pad,b=G.pad+(n-1)*CELL,e1=G.pad-CELL*.68,e2=b+CELL*.68,ew=CELL*.16;
   el('rect',{x:a,y:e1-ew/2,width:b-a,height:ew,rx:ew/2,fill:'var(--sb)'},svg);el('rect',{x:a,y:e2-ew/2,width:b-a,height:ew,rx:ew/2,fill:'var(--sb)'},svg);
   el('rect',{x:e1-ew/2,y:a,width:ew,height:b-a,rx:ew/2,fill:'var(--sw)',stroke:'var(--swe)','stroke-width':.6},svg);el('rect',{x:e2-ew/2,y:a,width:ew,height:b-a,rx:ew/2,fill:'var(--sw)',stroke:'var(--swe)','stroke-width':.6},svg);
   let d='';for(let k=0;k<n;k++){const v=G.pad+k*CELL;d+=`M${a} ${v}H${b}M${v} ${a}V${b}`;}
   el('path',{d,stroke:'var(--sgrid)','stroke-width':1,fill:'none','vector-effect':'non-scaling-stroke'},svg);
+  // the star points, as on a go board
+  {const e=n>11?3:2,h=[e,(n-1)/2,n-1-e];for(const x of h)for(const y of h)if(x===y||x+y===n-1)el('circle',{cx:G.pad+x*CELL,cy:G.pad+y*CELL,r:CELL*.11,fill:'var(--sstar)'},svg);}
   if(coordsOn){const lab=(x,y,s)=>{const e=el('text',{x,y,'text-anchor':'middle','dominant-baseline':'central','font-family':'var(--f-mono)','font-weight':600,'font-size':CELL*.32,fill:'var(--slab)'},svg);e.textContent=s;};
     for(let k=0;k<n;k++){lab(G.pad+k*CELL,W-CELL*.32,String.fromCharCode(97+k));lab(CELL*.32,G.pad+(n-1-k)*CELL,String(k+1));}}
   const g=el('g',{'pointer-events':'none'},svg),mine=!!(sh&&sh.mine),ms=sh&&sh.ms,c=mine?SL.toMove(ms):-1;
@@ -439,28 +456,24 @@ function drawBoard(){const svg=$('svg');svg.textContent='';svg.setAttribute('ari
   if(mine&&hintOn()){const m=SL.split(n,String(hintMv));if(m){P=m.p;F=m.f;T=m.t;}}else if(mine){P=ui.p;F=ui.f;T=ui.t;}
   if(F>=0&&T>=0){b2[F]=-1;b2[T]=c;}if(P>=0)b2[P]=c;
   for(let i=0;i<n*n;i++)if(b2[i]>=0)stone(g,i,b2[i]);
-  if(F>=0&&T>=0){stone(g,F,c,.3);el('line',{x1:PX(F),y1:PY(F),x2:PX(T),y2:PY(T),stroke:'var(--mk)','stroke-width':2.2,'stroke-dasharray':'4 3','stroke-linecap':'round'},g);dashRing(g,T);}
-  if(F>=0&&T<0)dashRing(g,F,'var(--sel)');
-  if(P>=0)dashRing(g,P);
-  // the last turn: a dot on the stone placed; a step, a thin line from where the stone came, a dot on it
+  // markers, one colour (--mk), as in Ayu: a stone placed or chosen, a dotted ring; a stone stepped, a dot where it was
+  // and a solid line to its ring; the rings dotted until the turn is played, then solid (the last turn)
+  if(F>=0&&T>=0)moveMark(g,F,T,true);
+  else if(F>=0){ring(g,F,true);for(let tt=0;tt<n*n;tt++)if(b2[tt]===-1&&adj(n,F,tt))el('circle',{cx:PX(tt),cy:PY(tt),r:CELL*.1,fill:'var(--mk)',opacity:.75},g);}
+  if(P>=0)ring(g,P,true);
   const last=sh?sh.d.last:null;
-  if(view&&last&&last.kind==='move'&&P<0&&F<0&&T<0){const dot=i=>el('circle',{cx:PX(i),cy:PY(i),r:SR*.24,fill:'var(--mk)'},g);
-    if(last.f>=0){el('line',{x1:PX(last.f),y1:PY(last.f),x2:PX(last.t),y2:PY(last.t),stroke:'var(--mk)','stroke-width':2,'stroke-linecap':'round',opacity:.8},g);el('circle',{cx:PX(last.f),cy:PY(last.f),r:SR*.16,fill:'var(--mk)'},g);dot(last.t);}
-    dot(last.p);}
+  if(view&&last&&last.kind==='move'&&P<0&&F<0&&T<0){if(last.f>=0)moveMark(g,last.f,last.t,false);if(last.p>=0)ring(g,last.p,false);}
   // the winning chain
   if(sh&&sh.d.over&&sh.d.over.chain){const ch=sh.d.over.chain;el('polyline',{points:ch.map(i=>PX(i)+','+PY(i)).join(' '),fill:'none',stroke:'var(--mk)','stroke-width':CELL*.12,'stroke-linecap':'round','stroke-linejoin':'round',opacity:.85},g);}
-  for(const [i] of (sh?altCells():new Map()))if(!b2[i]||b2[i]<0)el('circle',{cx:PX(i),cy:PY(i),r:SR*.3,fill:'none',stroke:'var(--mk)','stroke-width':2.4},g);
   el('g',{id:'hov','pointer-events':'none'},svg);
   const hit=el('g',{fill:'transparent'},svg);
-  for(let i=0;i<n*n;i++){const e=el('rect',{x:PX(i)-CELL/2,y:PY(i)-CELL/2,width:CELL,height:CELL,'data-i':i},hit);if(mine&&(ms.b[i]===-1||ms.b[i]===c||i===P||i===T))e.setAttribute('class','pt');}
+  for(let i=0;i<n*n;i++){const e=el('rect',{x:PX(i)-CELL/2,y:PY(i)-CELL/2,width:CELL,height:CELL,'data-i':i},hit);if(mine&&playable(ms,i))e.setAttribute('class','pt');}
   drawHover();}
 // under the mouse: the stone a click would place (or the stone moving there), in transparency, only where it can go
 function drawHover(){const g=$('hov');if(!g)return;g.textContent='';const sh=shown,i=ui.hover;
-  if(!sh||!sh.mine||i<0||hintOn()||busy==='hint'||sending)return;const ms=sh.ms,n=ms.size,c=SL.toMove(ms);
-  if(ms.b[i]!==-1||i===ui.p||i===ui.t)return;
-  if(ui.f>=0&&ui.t<0){if(adj(n,ui.f,i))stone(g,i,c,.5);return;}
-  if(ui.p>=0)return;
-  if(ui.f>=0&&ui.t>=0?SL.after(ms,i,ui.f,ui.t):canPlace(ms,i))stone(g,i,c,.5);}
+  if(!sh||!sh.mine||i<0||hintOn()||busy==='hint'||sending)return;const ms=sh.ms,c=SL.toMove(ms);
+  if(!playable(ms,i))return;const s=stepTo(ms,i);if(s.back)return;
+  if(s.t===i||s.p===i)stone(g,i,c,.5);}   // the stone placed there, or the stone moving there; nothing for a selection
 // a placement on i can belong to a legal turn (alone, or with a step)
 function canPlace(st,i){if(SL.after(st,i,-1,-1))return true;const n=st.size,c=SL.toMove(st);
   for(let f=0;f<n*n;f++){if(st.b[f]!==c)continue;const fx=f%n,fy=(f-fx)/n;
